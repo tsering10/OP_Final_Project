@@ -43,3 +43,4 @@ media
 # geckodriver
 geckodriver.log
 tests/geckodriver
+**/.DS_Store
