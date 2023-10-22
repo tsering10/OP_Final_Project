@@ -1,6 +1,5 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from accounts.models import User
-from django.test import RequestFactory
 from django.contrib.auth import get_user_model
 
 class CustomUserTests(TestCase):
