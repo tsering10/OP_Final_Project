@@ -2,34 +2,40 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.fields.related import OneToOneField
 
+
 # Create your models here.
 class UserManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, password=None):
-        """Creates and saves a user with his email, first_name,last_name,username and password"""
+        """
+        Creates and saves a user with his email,
+        first_name,last_name,username and password
+        """
         if not email:
-            raise ValueError('User must have an email address')
+            raise ValueError("User must have an email address")
 
         if not username:
-            raise ValueError('User must have an username')
+            raise ValueError("User must have an username")
 
         user = self.model(
-            email = self.normalize_email(email),
-            username = username,
-            first_name = first_name,
-            last_name = last_name,
+            email=self.normalize_email(email),
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, first_name, last_name, username, email, password=None):
-        """Creates and saves a superuser his first_name, last_name, email, username and password"""
+        """Creates and saves a superuser his first_name,
+        last_name, email, username and password
+        """
         user = self.create_user(
-            email = self.normalize_email(email),
-            username = username,
-            password = password,
-            first_name = first_name,
-            last_name = last_name,
+            email=self.normalize_email(email),
+            username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
         )
         user.is_admin = True
         user.is_active = True
@@ -38,13 +44,14 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class User(AbstractBaseUser):
     CHEF = 1
     CUSTOMER = 2
 
     ROLE_CHOICE = (
-        (CHEF, 'Chef'),
-        (CUSTOMER, 'Customer'),
+        (CHEF, "Chef"),
+        (CUSTOMER, "Customer"),
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -63,8 +70,8 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     objects = UserManager()
 
@@ -79,16 +86,20 @@ class User(AbstractBaseUser):
 
     def get_role(self):
         if self.role == 1:
-            user_role = 'Chef'
+            user_role = "Chef"
         elif self.role == 2:
-            user_role = 'Customer'
+            user_role = "Customer"
         return user_role
-    
+
 
 class UserProfile(models.Model):
     user = OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
-    profile_picture = models.ImageField(upload_to='users/profile_pictures', blank=True, null=True)
-    cover_photo = models.ImageField(upload_to='users/cover_photos', blank=True, null=True)
+    profile_picture = models.ImageField(
+        upload_to="users/profile_pictures", blank=True, null=True
+    )
+    cover_photo = models.ImageField(
+        upload_to="users/cover_photos", blank=True, null=True
+    )
     address = models.CharField(max_length=250, blank=True, null=True)
     city = models.CharField(max_length=15, blank=True, null=True)
     state = models.CharField(max_length=15, blank=True, null=True)
