@@ -44,14 +44,14 @@ class RegisterChefView(CreateView):
             user_profile = UserProfile.objects.get(user=user)
             chef.user_profile = user_profile
             chef.save()
-            messages.success(self.request, "Chef registered successfully!")
+            messages.success(
+                self.request,
+                "Chef account has been\
+                          registered sucessfully!",
+            )
             return redirect("home")
 
-        messages.success(
-            self.request,
-            "Chef account has been\
-                          registered sucessfully!",
-        )
+        messages.error(self.request, "Invalid chef form")
         return redirect("registerChef")
 
     def get_context_data(self, **kwargs):

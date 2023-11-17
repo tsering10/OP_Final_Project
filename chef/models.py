@@ -3,7 +3,7 @@ from accounts.models import User, UserProfile
 
 
 class Chef(models.Model):
-    user = models.OneToOneField(User, related_name="user", on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name="chef", on_delete=models.CASCADE)
     user_profile = models.OneToOneField(
         UserProfile, related_name="userprofile", on_delete=models.CASCADE
     )
