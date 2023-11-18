@@ -5,11 +5,9 @@ from .forms import UserForm
 from chef.forms import ChefForm
 from .models import User, UserProfile
 from django.contrib import messages, auth
-from django.contrib.auth import login
-from django.contrib.auth import authenticate
+from django.contrib.auth import login, authenticate
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 
 
