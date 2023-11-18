@@ -6,9 +6,7 @@ from chef.forms import ChefForm
 from .models import User, UserProfile
 from django.contrib import messages, auth
 from django.contrib.auth import login
-from django.contrib.auth import authenticate, login
-from django.shortcuts import redirect, render
-from django.views import View
+from django.contrib.auth import authenticate
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -66,7 +64,7 @@ class RegisterChefView(CreateView):
         return context
 
 
-class LoginView(View):
+class LoginView(TemplateView):
     template_name = "accounts/login.html"
     success_customer_url = reverse_lazy("customerDashboard")
     success_chef_url = reverse_lazy("chefDashboard")
@@ -109,7 +107,7 @@ class LogoutView(TemplateView):
         return redirect("login")
 
 
-class CustomerDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class CustDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = "accounts/Customerdashboard.html"
     login_url = reverse_lazy("login")
 
