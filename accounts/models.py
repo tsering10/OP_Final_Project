@@ -85,11 +85,19 @@ class User(AbstractBaseUser):
         return True
 
     def get_role(self):
-        if self.role == 1:
+        if self.is_chef:
             user_role = "Chef"
-        elif self.role == 2:
+        elif self.is_customer:
             user_role = "Customer"
         return user_role
+
+    @property
+    def is_chef(self):
+        return self.role == 1
+
+    @property
+    def is_customer(self):
+        return self.role == 2
 
 
 class UserProfile(models.Model):

@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from .forms import UserForm
 from chef.forms import ChefForm
 from .models import User, UserProfile
@@ -8,7 +8,6 @@ from django.contrib import messages, auth
 from django.contrib.auth import login, authenticate
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import TemplateView
 
 
 class RegisterUserView(CreateView):
@@ -105,27 +104,34 @@ class LogoutView(TemplateView):
         return redirect("login")
 
 
-class CustDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    template_name = "accounts/Customerdashboard.html"
-    login_url = reverse_lazy("login")
-
+class ChefView(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
-        return self.request.user.role == 2
+        return self.request.user.is_chef
 
     def handle_no_permission(self):
-        if self.request.user.role == 1:
+        if self.request.user.is_customer:
+            return redirect("customerDashboard")
+        return super().handle_no_permission()
+
+
+class CustomerView(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_customer
+
+    def handle_no_permission(self):
+        if self.request.user.is_chef:
             return redirect("chefDashboard")
         return super().handle_no_permission()
 
 
-class ChefDashboardView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class CustDashboardView(CustomerView, TemplateView):
+    template_name = "accounts/Customerdashboard.html"
+
+
+class ChefDashboardView(ChefView, TemplateView):
     template_name = "accounts/Chefdashboard.html"
-    login_url = reverse_lazy("login")
 
-    def test_func(self):
-        return self.request.user.role == 1
-
-    def handle_no_permission(self):
-        if self.request.user.role == 2:
-            return redirect("customerDashboard")
-        return super().handle_no_permission()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["chef"] = self.request.user.chef
+        return context
