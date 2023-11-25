@@ -69,13 +69,13 @@ class LoginView(TemplateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             messages.warning(request, "You are already logged in!")
-            return self._redirect_to_dashboard(request.user.role)
+            return self._redirect_to_dashboard(request.user)
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             messages.warning(request, "You are already logged in!")
-            return self._redirect_to_dashboard(request.user.role)
+            return self._redirect_to_dashboard(request.user)
 
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -85,15 +85,15 @@ class LoginView(TemplateView):
         if user is not None:
             login(request, user)
             messages.success(request, "You are now logged in.")
-            return self._redirect_to_dashboard(user.role)
+            return self._redirect_to_dashboard(user)
         else:
             messages.error(request, "Invalid login credentials")
             return redirect("login")
 
-    def _redirect_to_dashboard(self, role):
-        if role == 1:  # Chef role
+    def _redirect_to_dashboard(self, user):
+        if user.is_chef:  # Chef role
             return redirect(self.success_chef_url)
-        elif role == 2:  # Customer role
+        elif user.is_customer:  # Customer role
             return redirect(self.success_customer_url)
 
 
