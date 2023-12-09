@@ -50,7 +50,6 @@ class RegisterUserView(CreateView):
         mail_subject = "Email Verification"
         email_template = "accounts/emails/account_verification_email.html"
         send_verification_email(self.request, user, mail_subject, email_template)
-        # login(self.request, user)
         return redirect("home")
 
 
