@@ -1,5 +1,5 @@
 from django.contrib import admin
-from chef.models import Chef
+from efood_main.apps.chef.models import Chef
 
 # Register your models here.
 

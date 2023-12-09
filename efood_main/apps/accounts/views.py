@@ -2,12 +2,37 @@ from django.shortcuts import redirect, render
 
 from django.views.generic import CreateView, TemplateView
 from .forms import UserForm
-from chef.forms import ChefForm
+from efood_main.apps.chef.forms import ChefForm
 from .models import User, UserProfile
 from django.contrib import messages, auth
 from django.contrib.auth import login, authenticate
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+from django.conf import settings
+
+
+def send_verification_email(request, user, mail_subject, email_template):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    current_site = get_current_site(request)
+    message = render_to_string(
+        email_template,
+        {
+            "user": user,
+            "domain": current_site,
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "token": default_token_generator.make_token(user),
+        },
+    )
+    to_email = user.email
+    mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
+    mail.content_subtype = "html"
+    mail.send()
 
 
 class RegisterUserView(CreateView):
@@ -21,7 +46,11 @@ class RegisterUserView(CreateView):
                           registered sucessfully!",
         )
         user = form.save()
-        login(self.request, user)
+        # Send the verification email
+        mail_subject = "Email Verification"
+        email_template = "accounts/emails/account_verification_email.html"
+        send_verification_email(self.request, user, mail_subject, email_template)
+        # login(self.request, user)
         return redirect("home")
 
 
@@ -91,9 +120,9 @@ class LoginView(TemplateView):
             return redirect("login")
 
     def _redirect_to_dashboard(self, user):
-        if user.is_chef:  # Chef role
+        if user.is_chef:
             return redirect(self.success_chef_url)
-        elif user.is_customer:  # Customer role
+        elif user.is_customer:
             return redirect(self.success_customer_url)
 
 
@@ -101,7 +130,25 @@ class LogoutView(TemplateView):
     def get(self, request):
         auth.logout(request)
         messages.info(request, "You are logged out.")
-        return redirect("login")
+        return redirect("home")
+
+
+class ActivateView(TemplateView):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            myuser = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            myuser = None
+
+        if myuser is not None and default_token_generator.check_token(myuser, token):
+            myuser.is_active = True
+            myuser.save()
+            messages.success(request, "Your account has been activated!")
+            return redirect("login")
+        else:
+            messages.error(request, "Invalid activation link")
+            return redirect("login")
 
 
 class ChefView(LoginRequiredMixin, UserPassesTestMixin):

@@ -6,6 +6,7 @@ from .views import (
     LogoutView,
     ChefDashboardView,
     CustDashboardView,
+    ActivateView,
 )
 
 
@@ -24,4 +25,5 @@ urlpatterns = [
         ChefDashboardView.as_view(),
         name="chefDashboard",
     ),
+    path("activate/<uidb64>/<token>/", ActivateView.as_view(), name="activate"),
 ]
