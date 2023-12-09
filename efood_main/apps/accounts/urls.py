@@ -7,6 +7,9 @@ from .views import (
     ChefDashboardView,
     CustDashboardView,
     ActivateView,
+    ForgotPasswordView,
+    ResetPasswordValidateView,
+    ResetPasswordView,
 )
 
 
@@ -26,4 +29,11 @@ urlpatterns = [
         name="chefDashboard",
     ),
     path("activate/<uidb64>/<token>/", ActivateView.as_view(), name="activate"),
+    path("forgot_password/", ForgotPasswordView.as_view(), name="forgot_password"),
+    path(
+        "reset_password_validate/<uidb64>/<token>/",
+        ResetPasswordValidateView.as_view(),
+        name="reset_password_validate",
+    ),
+    path("reset_password/", ResetPasswordView.as_view(), name="reset_password"),
 ]
