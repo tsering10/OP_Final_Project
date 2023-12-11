@@ -19,12 +19,12 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path(
-        "customer/dashboard/",
+        "customerDashboard/",
         CustDashboardView.as_view(),
         name="customerDashboard",
     ),
     path(
-        "chef/dashboard/",
+        "chefDashboard/",
         ChefDashboardView.as_view(),
         name="chefDashboard",
     ),
