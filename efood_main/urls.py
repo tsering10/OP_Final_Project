@@ -23,6 +23,6 @@ from . import views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.home, name="home"),
-    # path("accounts/", include("efood_main.apps.accounts.urls")),
-    path("", include("efood_main.apps.accounts.urls")),
+    path("accounts/", include("efood_main.apps.accounts.urls")),
+    # path("", include("efood_main.apps.accounts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
