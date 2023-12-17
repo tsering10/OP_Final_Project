@@ -1,5 +1,6 @@
 from django import forms
 from .models import User, UserProfile
+from django.core.exceptions import ValidationError
 
 
 class UserForm(forms.ModelForm):
@@ -27,9 +28,16 @@ class UserForm(forms.ModelForm):
         return user
 
 
+def custom_validator(value):
+    valid_formats = ["png", "jpeg"]
+    if not any([True if value.name.endswith(i) else False for i in valid_formats]):
+        raise ValidationError(f"{value.name} is not a valid image format")
+
+
 class UserProfileForm(forms.ModelForm):
     profile_picture = forms.FileField(
-        widget=forms.FileInput(attrs={"class": "btn btn-info"})
+        widget=forms.FileInput(attrs={"class": "btn btn-info"}),
+        validators=[custom_validator],
     )
     cover_photo = forms.FileField(
         widget=forms.FileInput(attrs={"class": "btn btn-info"})
