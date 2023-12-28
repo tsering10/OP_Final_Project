@@ -6,8 +6,10 @@ from .models import Chef
 from efood_main.apps.accounts.models import UserProfile
 from django.contrib import messages
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class ChefProfileView(TemplateView):
+
+class ChefProfileView(LoginRequiredMixin, TemplateView):
     template_name = "chef/chef_profile.html"
 
     def get(self, request, *args, **kwargs):
@@ -35,7 +37,7 @@ class ChefProfileView(TemplateView):
             profile_form.save()
             chef_form.save()
             messages.success(request, "Settings updated.")
-            return redirect("vprofile")
+            return redirect("chef_profile")
         else:
             print(profile_form.errors)
             print(chef_form.errors)
