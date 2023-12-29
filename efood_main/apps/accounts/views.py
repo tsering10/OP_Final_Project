@@ -1,20 +1,20 @@
-from django.shortcuts import redirect, render
-
-from django.views.generic import CreateView, TemplateView
-from .forms import UserForm
-from efood_main.apps.chef.forms import ChefForm
-from .models import User, UserProfile
-from django.contrib import messages, auth
-from django.contrib.auth import login, authenticate
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
 from django.conf import settings
+from django.contrib import auth, messages
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import CreateView, TemplateView
+from efood_main.apps.chef.forms import ChefForm
+
+from .forms import UserForm
+from .models import User, UserProfile
 
 
 def send_verification_email(request, user, mail_subject, email_template):

@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
 from efood_main.apps.accounts import views as AccountViews
+
+from . import views
 
 urlpatterns = [
     path("", AccountViews.CustDashboardView.as_view(), name="chef"),

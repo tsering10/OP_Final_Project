@@ -1,19 +1,18 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import TemplateView, ListView
-from django.views.generic.edit import CreateView
-from .forms import ChefForm
-from efood_main.apps.accounts.forms import UserProfileForm
-from .models import Chef
-from efood_main.apps.accounts.models import UserProfile
-from efood_main.apps.recipe.models import Category, RecipeItem
-from efood_main.apps.recipe.forms import CategoryForm
-
 from django.contrib import messages
-from django.urls import reverse_lazy
-from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.text import slugify
-
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.utils.text import slugify
+from django.views.generic import ListView, TemplateView
+from django.views.generic.edit import CreateView
+from efood_main.apps.accounts.forms import UserProfileForm
+from efood_main.apps.accounts.models import UserProfile
+from efood_main.apps.recipe.forms import CategoryForm
+from efood_main.apps.recipe.models import Category, RecipeItem
+
+from .forms import ChefForm
+from .models import Chef
 
 
 class ChefProfileView(LoginRequiredMixin, TemplateView):
