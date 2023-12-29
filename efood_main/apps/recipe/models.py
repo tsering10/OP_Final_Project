@@ -6,7 +6,7 @@ from efood_main.apps.chef.models import Chef
 
 class Category(models.Model):
     chef = models.ForeignKey(Chef, on_delete=models.CASCADE)
-    category_name = models.CharField(max_length=50)
+    category_name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
