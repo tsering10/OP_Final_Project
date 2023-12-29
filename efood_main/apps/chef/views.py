@@ -96,5 +96,5 @@ class AddCategoryView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         category = form.save(commit=False)
         category.chef = self.request.user.chef
-        category.slug = slugify(category.category_name) + "-" + str(category.id)
+        category.slug = slugify(category.category_name)
         return super().form_valid(form)
