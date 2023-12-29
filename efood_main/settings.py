@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "efood_main.apps.accounts",
     "efood_main.apps.chef",
+    "efood_main.apps.recipe",
 ]
 
 MIDDLEWARE = [

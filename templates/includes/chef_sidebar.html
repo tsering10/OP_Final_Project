@@ -3,7 +3,7 @@
         <ul>
             <li class="{% if '/accounts/chefDashboard/' == request.path or '/accounts/chef/' == request.path %}active{% endif %}"><a href="{%url 'chefDashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
             <li class="{% if 'profile' in request.path %}active {% endif %}"><a href="{% url 'chef_profile' %}"><i class="icon-build"></i>Profile Setting</a></li>
-            <li><a href="#"><i class="icon-menu5"></i>Recipe Builder</a></li>
+            <li class="{% if 'recipe-builder' in request.path %}active {% endif %}"><a href="{% url 'recipe_builder' %}"><i class="icon-menu5"></i>Recipe Builder</a></li>
             <li><a href="#"><i class="icon-file-text2"></i>Workshop Builder</a></li>
             <li><a href="#"><i class="icon-unlock-alt"></i>Change Password</a></li>
             <li><a class="logout-btn" href={% url 'logout' %}><i class="icon-log-out"></i>Signout</a></li>
