@@ -4,7 +4,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from efood_main.apps.accounts.forms import UserProfileForm
 from efood_main.apps.accounts.models import UserProfile
@@ -178,3 +178,12 @@ class RecipeDeleteView(ChefViewMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy("recipeitems_by_category", args=[self.object.category.id])
+
+
+class RecipeDetailView(ChefViewMixin, DetailView):
+    model = RecipeItem
+    template_name = "chef/recipe_detail.html"
+    context_object_name = "recipe"
+
+    def get_queryset(self):
+        return RecipeItem.objects.filter(slug=self.kwargs["slug"])

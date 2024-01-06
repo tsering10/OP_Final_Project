@@ -1,10 +1,10 @@
 from django.urls import path
-from efood_main.apps.accounts import views as AccountViews
+from efood_main.apps.accounts import views as account_views
 
 from . import views
 
 urlpatterns = [
-    path("", AccountViews.CustDashboardView.as_view(), name="chef"),
+    path("", account_views.CustDashboardView.as_view(), name="chef"),
     path("profile/", views.ChefProfileView.as_view(), name="chef_profile"),
     path("recipe-builder/", views.ChefRecipeBuilder.as_view(), name="recipe_builder"),
     path(
@@ -40,5 +40,10 @@ urlpatterns = [
         "recipe-builder/recipe/delete/<int:pk>/",
         views.RecipeDeleteView.as_view(),
         name="delete_recipe",
+    ),
+    path(
+        "recipe-builder/recipe/<slug>/",
+        views.RecipeDetailView.as_view(),
+        name="recipe_detail",
     ),
 ]
