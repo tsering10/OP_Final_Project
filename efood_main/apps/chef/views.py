@@ -2,15 +2,16 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
 from django.views.generic import ListView, TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from efood_main.apps.accounts.forms import UserProfileForm
 from efood_main.apps.accounts.models import UserProfile
-from efood_main.apps.recipe.forms import CategoryForm
+from efood_main.apps.recipe.forms import CategoryForm, RecipeItemForm
 from efood_main.apps.recipe.models import Category, RecipeItem
-
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.exceptions import ObjectDoesNotExist
 from .forms import ChefForm
 from .models import Chef
 
@@ -57,25 +58,32 @@ class ChefProfileView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class ChefRecipeBuilder(LoginRequiredMixin, TemplateView):
+class ChefViewMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        try:
+            self.chef = self.request.user.chef
+            return self.chef
+        except ObjectDoesNotExist:
+            return False
+
+
+class ChefRecipeBuilder(ChefViewMixin, TemplateView):
     model = Category
     template_name = "chef/recipe_builder.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        chef = Chef.objects.get(user=self.request.user)
-        context["categories"] = Category.objects.filter(chef=chef)
+        context["categories"] = Category.objects.filter(chef=self.chef)
         return context
 
 
-class RecipeItemsByCategoryView(LoginRequiredMixin, ListView):
+class RecipeItemsByCategoryView(ChefViewMixin, ListView):
     template_name = "chef/recipe_items_by_category.html"
     context_object_name = "recipeitems"
 
     def get_queryset(self):
-        chef = Chef.objects.get(user=self.request.user)
         category = get_object_or_404(Category, pk=self.kwargs["pk"])
-        return RecipeItem.objects.filter(chef=chef, category=category)
+        return RecipeItem.objects.filter(chef=self.chef, category=category)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,8 +92,7 @@ class RecipeItemsByCategoryView(LoginRequiredMixin, ListView):
         return context
 
 
-class AddCategoryView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
-    template_name = "chef/add_category.html"
+class AddCategoryView(ChefViewMixin, SuccessMessageMixin, CreateView):
     model = Category
     form_class = CategoryForm
     template_name = "chef/add_category.html"
@@ -94,6 +101,80 @@ class AddCategoryView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         category = form.save(commit=False)
-        category.chef = self.request.user.chef
+        # category.chef = self.request.user.chef
+        category.chef = self.chef
         category.slug = slugify(category.category_name)
         return super().form_valid(form)
+
+
+class EditCategoryView(ChefViewMixin, SuccessMessageMixin, UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "chef/edit_category.html"
+    success_url = reverse_lazy("recipe_builder")
+    success_message = "Category updated successfully!"
+
+    def form_valid(self, form):
+        category = form.save(commit=False)
+        category.slug = slugify(category.category_name)
+        # category.chef = self.request.user.chef
+        category.chef = self.chef
+        return super().form_valid(form)
+
+
+class CategoryDeleteView(ChefViewMixin, DeleteView):
+    model = Category
+    template_name = "chef/category_confirm_delete.html"
+    success_url = reverse_lazy("recipe_builder")
+
+    def delete(self, request, *args, **kwargs):
+        category = get_object_or_404(Category, pk=self.kwargs["pk"])
+        category.delete()
+        return redirect(self.success_url)
+
+
+class AddRecipeView(ChefViewMixin, SuccessMessageMixin, CreateView):
+    model = RecipeItem
+    form_class = RecipeItemForm
+    template_name = "chef/add_recipe.html"
+    success_message = "Recipe Item added successfully!"
+
+    def form_valid(self, form):
+        form.instance.chef = self.chef
+        form.instance.slug = slugify(form.cleaned_data["recipe_title"])
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("recipeitems_by_category", args=(self.object.category.id,))
+
+
+class EditRecipeView(ChefViewMixin, SuccessMessageMixin, UpdateView):
+    model = RecipeItem
+    form_class = RecipeItemForm
+    template_name = "chef/edit_recipe.html"
+    context_object_name = "recipe"
+    success_message = "Recipe Item updated successfully!"
+
+    def get_queryset(self):
+        return RecipeItem.objects.filter(chef=self.chef)
+
+    def get_success_url(self):
+        return reverse_lazy("recipeitems_by_category", args=[self.object.category.id])
+
+    def form_valid(self, form):
+        recipe_title = form.cleaned_data["recipe_title"]
+        form.instance.chef = self.chef
+        form.instance.slug = slugify(recipe_title)
+        return super().form_valid(form)
+
+
+class RecipeDeleteView(ChefViewMixin, DeleteView):
+    model = RecipeItem
+    template_name = "chef/recipe_confirm_delete.html"
+
+    def delete(self, request, *args, **kwargs):
+        recipe = get_object_or_404(RecipeItem, pk=self.kwargs["pk"])
+        recipe.delete()
+
+    def get_success_url(self):
+        return reverse_lazy("recipeitems_by_category", args=[self.object.category.id])

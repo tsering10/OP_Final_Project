@@ -17,4 +17,28 @@ urlpatterns = [
         views.AddCategoryView.as_view(),
         name="add_category",
     ),
+    path(
+        "recipe-builder/category/edit/<int:pk>/",
+        views.EditCategoryView.as_view(),
+        name="edit_category",
+    ),
+    path(
+        "recipe-builder/category/delete/<int:pk>/",
+        views.CategoryDeleteView.as_view(),
+        name="delete_category",
+    ),
+    # RecipeItem CRUD
+    path(
+        "recipe-builder/recipe/add/", views.AddRecipeView.as_view(), name="add_recipe"
+    ),
+    path(
+        "recipe-builder/recipe/edit/<int:pk>/",
+        views.EditRecipeView.as_view(),
+        name="edit_recipe",
+    ),
+    path(
+        "recipe-builder/recipe/delete/<int:pk>/",
+        views.RecipeDeleteView.as_view(),
+        name="delete_recipe",
+    ),
 ]

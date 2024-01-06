@@ -5,7 +5,7 @@ from efood_main.apps.chef.models import Chef
 
 
 class Category(models.Model):
-    chef = models.ForeignKey(Chef, on_delete=models.CASCADE)
+    chef = models.ForeignKey(Chef, on_delete=models.CASCADE, related_name="categories")
     category_name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(max_length=255, blank=True)
@@ -40,3 +40,11 @@ class RecipeItem(models.Model):
 
     def __str__(self):
         return self.recipe_title
+
+    @property
+    def formatted_preparation_time(self):
+        total_seconds = self.preparation_time.total_seconds()
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+        seconds = int(total_seconds % 60)
+        return f"{hours:02d} hr:{minutes:02d} min:{seconds:02d} sec"
