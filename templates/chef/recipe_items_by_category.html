@@ -44,7 +44,7 @@
                                             <span class="badge badge-success">{{recipe.formatted_preparation_time}}</span>
                                     
                                         </td>
-                                        <td> <a href="{% url 'recipe_detail' recipe.slug %}" class="btn btn-danger"><i class="fa fa-eye" aria-hidden="true"> Detail</i></a></td>
+                                        <td> <a href="{% url 'recipe_detail' recipe.slug  recipe.id%}" class="btn btn-danger"><i class="fa fa-eye" aria-hidden="true"> Detail</i></a></td>
                                         <td><a href="{% url 'edit_recipe' recipe.id %}" style="color:unset;"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp; <a href="{% url 'delete_recipe' recipe.id %}"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a></td>
 
                                     </tr>

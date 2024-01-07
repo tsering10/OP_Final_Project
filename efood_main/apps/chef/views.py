@@ -1,6 +1,9 @@
+from typing import Any
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy, reverse
 from django.utils.text import slugify
@@ -87,7 +90,7 @@ class RecipeItemsByCategoryView(ChefViewMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = get_object_or_404(Category, pk=self.kwargs["pk"])
+        category = get_object_or_404(Category, pk=self.kwargs["pk"], chef=self.chef)
         context["category"] = category
         return context
 
@@ -101,10 +104,12 @@ class AddCategoryView(ChefViewMixin, SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         category = form.save(commit=False)
-        # category.chef = self.request.user.chef
         category.chef = self.chef
         category.slug = slugify(category.category_name)
         return super().form_valid(form)
+
+    def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
+        return get_object_or_404(Category, pk=self.kwargs["pk"], chef=self.chef)
 
 
 class EditCategoryView(ChefViewMixin, SuccessMessageMixin, UpdateView):
@@ -114,10 +119,12 @@ class EditCategoryView(ChefViewMixin, SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy("recipe_builder")
     success_message = "Category updated successfully!"
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Category, pk=self.kwargs["pk"], chef=self.chef)
+
     def form_valid(self, form):
         category = form.save(commit=False)
         category.slug = slugify(category.category_name)
-        # category.chef = self.request.user.chef
         category.chef = self.chef
         return super().form_valid(form)
 
@@ -127,10 +134,8 @@ class CategoryDeleteView(ChefViewMixin, DeleteView):
     template_name = "chef/category_confirm_delete.html"
     success_url = reverse_lazy("recipe_builder")
 
-    def delete(self, request, *args, **kwargs):
-        category = get_object_or_404(Category, pk=self.kwargs["pk"])
-        category.delete()
-        return redirect(self.success_url)
+    def get_object(self, queryset=None):
+        return get_object_or_404(Category, pk=self.kwargs["pk"], chef=self.chef)
 
 
 class AddRecipeView(ChefViewMixin, SuccessMessageMixin, CreateView):
@@ -172,9 +177,8 @@ class RecipeDeleteView(ChefViewMixin, DeleteView):
     model = RecipeItem
     template_name = "chef/recipe_confirm_delete.html"
 
-    def delete(self, request, *args, **kwargs):
-        recipe = get_object_or_404(RecipeItem, pk=self.kwargs["pk"])
-        recipe.delete()
+    def get_object(self, queryset=None):
+        return get_object_or_404(RecipeItem, pk=self.kwargs["pk"], chef=self.chef)
 
     def get_success_url(self):
         return reverse_lazy("recipeitems_by_category", args=[self.object.category.id])
@@ -186,4 +190,12 @@ class RecipeDetailView(ChefViewMixin, DetailView):
     context_object_name = "recipe"
 
     def get_queryset(self):
-        return RecipeItem.objects.filter(slug=self.kwargs["slug"])
+        slug = self.kwargs["slug"]
+        recipe_id = self.kwargs["id"]
+        return RecipeItem.objects.filter(slug=slug, id=recipe_id)
+
+    def get_object(self, queryset=None):
+        slug = self.kwargs["slug"]
+        chef = self.chef
+        recipe_id = self.kwargs["id"]
+        return get_object_or_404(RecipeItem, slug=slug, id=recipe_id, chef=chef)

@@ -41,8 +41,13 @@ urlpatterns = [
         views.RecipeDeleteView.as_view(),
         name="delete_recipe",
     ),
+    # path(
+    #     "recipe-builder/recipe/<slug>/",
+    #     views.RecipeDetailView.as_view(),
+    #     name="recipe_detail",
+    # ),
     path(
-        "recipe-builder/recipe/<slug>/",
+        "recipe-builder/recipe/<str:slug>/<int:id>/",
         views.RecipeDetailView.as_view(),
         name="recipe_detail",
     ),
