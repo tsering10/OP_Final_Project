@@ -108,7 +108,7 @@ class AddCategoryView(ChefViewMixin, SuccessMessageMixin, CreateView):
         category.slug = slugify(category.category_name)
         return super().form_valid(form)
 
-    def get_object(self, queryset: QuerySet[Any] | None = ...) -> Model:
+    def get_object(self, queryset=None):
         return get_object_or_404(Category, pk=self.kwargs["pk"], chef=self.chef)
 
 
