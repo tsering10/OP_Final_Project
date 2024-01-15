@@ -30,7 +30,7 @@ class RecipeItem(models.Model):
         Category, on_delete=models.CASCADE, related_name="recipeitems"
     )
     recipe_title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True)
+    slug = models.SlugField(max_length=255)
     recipe_ingredients = models.TextField()
     recipe_instructions = models.TextField()
     preparation_time = models.DurationField()

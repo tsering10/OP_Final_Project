@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "djmoney",
     "efood_main.apps.accounts",
     "efood_main.apps.chef",
     "efood_main.apps.recipe",
+    "efood_main.apps.workshop",
 ]
 
 MIDDLEWARE = [

@@ -149,6 +149,11 @@ class AddRecipeView(ChefViewMixin, SuccessMessageMixin, CreateView):
     def get_success_url(self):
         return reverse("recipeitems_by_category", args=(self.object.category.id,))
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["chef"] = self.chef
+        return kwargs
+
 
 class EditRecipeView(ChefViewMixin, SuccessMessageMixin, UpdateView):
     model = RecipeItem

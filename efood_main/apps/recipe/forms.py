@@ -37,3 +37,8 @@ class RecipeItemForm(forms.ModelForm):
             "external_link",
             "image",
         ]
+
+    def __init__(self, *args, chef=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if chef:
+            self.fields["category"].queryset = Category.objects.filter(chef=chef)
