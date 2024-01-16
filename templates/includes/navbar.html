@@ -19,11 +19,11 @@
                         <div class="login-option">
                             {% if user.is_authenticated %}
                             {% if user.is_chef%}
-                            <a class="cs-color cs-popup-joinus-btn login-popup text-primary" href="{% url 'chefDashboard' %}">My Account </a>
+                            <a class="cs-color cs-popup-joinus-btn login-popup text-primary" href="{% url 'chefDashboard' %}"><i class="icon-build"></i> Account </a>
                             {% else %}
-                            <a class="cs-color cs-popup-joinus-btn login-popup text-primary" href="{% url 'customerDashboard' %}">My Account </a>
+                            <a class="cs-color cs-popup-joinus-btn login-popup text-primary" href="{% url 'customerDashboard' %}"><i class="icon-build"></i> Account </a>
                             {% endif %}
-                            <a class="cs-color cs-popup-joinus-btn login-popup text-danger" href="{% url 'logout' %}">Logout</a>
+                            <a class="cs-color cs-popup-joinus-btn login-popup text-danger" href="{% url 'logout' %}"><i class="icon-log-out"></i> Logout</a>
                             {% else %}
                             <a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'login' %}">Login </a> / 
                                 <span><a href="{% url 'registerUser' %}" class="cs-color cs-popup-joinus-btn login-popup ml-0">Register</a></span><a class="get-start-btn" href="{% url 'registerChef' %}">
