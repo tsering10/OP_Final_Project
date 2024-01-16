@@ -10,10 +10,16 @@ from .views import (
     ForgotPasswordView,
     ResetPasswordValidateView,
     ResetPasswordView,
+    RegisterActivationView,
 )
 
 
 urlpatterns = [
+    path(
+        "register-activation",
+        RegisterActivationView.as_view(),
+        name="register-activation",
+    ),
     path("registerUser/", RegisterUserView.as_view(), name="registerUser"),
     path("registerChef/", RegisterChefView.as_view(), name="registerChef"),
     path("login/", LoginView.as_view(), name="login"),

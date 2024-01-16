@@ -35,6 +35,10 @@ def send_verification_email(request, user, mail_subject, email_template):
     mail.send()
 
 
+class RegisterActivationView(TemplateView):
+    template_name = "accounts/register-activation.html"
+
+
 class RegisterUserView(CreateView):
     form_class = UserForm
     template_name = "accounts/registerUser.html"
@@ -50,7 +54,7 @@ class RegisterUserView(CreateView):
         mail_subject = "Email Verification"
         email_template = "accounts/emails/account_verification_email.html"
         send_verification_email(self.request, user, mail_subject, email_template)
-        return redirect("home")
+        return redirect("register-activation")
 
 
 class RegisterChefView(CreateView):
@@ -88,7 +92,7 @@ class RegisterChefView(CreateView):
                       Please wait for the approval.",
             )
             # return redirect("registerVendor")
-            return redirect("home")
+            return redirect("register-activation")
 
         messages.error(self.request, "Invalid chef form")
         return redirect("registerChef")
