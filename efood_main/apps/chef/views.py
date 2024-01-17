@@ -1,17 +1,19 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
-from django.views.generic import ListView, TemplateView, DetailView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from efood_main.apps.accounts.forms import UserProfileForm
 from efood_main.apps.accounts.models import UserProfile
 from efood_main.apps.recipe.forms import CategoryForm, RecipeItemForm
 from efood_main.apps.recipe.models import Category, RecipeItem
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.exceptions import ObjectDoesNotExist
+from efood_main.apps.workshop.forms import WorkshopItemForm
+from efood_main.apps.workshop.models import Workshop
+
 from .forms import ChefForm
 from .models import Chef
 
@@ -43,7 +45,7 @@ class ChefProfileView(LoginRequiredMixin, TemplateView):
         if profile_form.is_valid() and chef_form.is_valid():
             profile_form.save()
             chef_form.save()
-            messages.success(request, "Settings updated.")
+            messages.success(request, "Profile updated.")
             return redirect("chef_profile")
         else:
             print(profile_form.errors)
@@ -201,3 +203,13 @@ class RecipeDetailView(ChefViewMixin, DetailView):
         chef = self.chef
         recipe_id = self.kwargs["id"]
         return get_object_or_404(RecipeItem, slug=slug, id=recipe_id, chef=chef)
+
+
+class ChefWorkshopBuilder(ChefViewMixin, ListView):
+    model = Workshop
+    template_name = "chef/workshop_builder.html"
+    context_object_name = "workshops"
+
+    def get_queryset(self):
+        # Filter workshops based on the currently logged-in chef
+        return Workshop.objects.filter(chef=self.chef)

@@ -8,7 +8,6 @@ class WorkshopAdmin(admin.ModelAdmin):
     list_display = (
         "chef",
         "title",
-        "description",
         "date",
         "capacity",
         "price",
