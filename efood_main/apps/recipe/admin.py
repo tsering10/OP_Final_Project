@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Category, RecipeItem
 
 # Register your models here.

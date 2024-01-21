@@ -1,8 +1,9 @@
 from django.db import models
-from efood_main.apps.chef.models import Chef
-from efood_main.apps.accounts.models import User
-from efood_main.apps.recipe.models import RecipeItem
 from djmoney.models.fields import MoneyField
+
+from efood_main.apps.accounts.models import User
+from efood_main.apps.chef.models import Chef
+from efood_main.apps.recipe.models import RecipeItem
 
 
 # Create your models here.

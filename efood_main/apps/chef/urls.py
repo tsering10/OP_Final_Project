@@ -1,4 +1,5 @@
 from django.urls import path
+
 from efood_main.apps.accounts import views as account_views
 
 from . import views
@@ -51,5 +52,25 @@ urlpatterns = [
         "workshop-builder/",
         views.ChefWorkshopBuilder.as_view(),
         name="workshop_builder",
+    ),
+    path(
+        "workshop-builder/workshop/add/",
+        views.AddWorkshopView.as_view(),
+        name="add_workshop",
+    ),
+    path(
+        "workshop-builder/workshop/edit/<int:pk>/",
+        views.EditWorkshopView.as_view(),
+        name="edit_workshop",
+    ),
+    path(
+        "workshop-builder/workshop/delete/<int:pk>/",
+        views.WorkshopDeleteView.as_view(),
+        name="delete_workshop",
+    ),
+    path(
+        "workshop-builder/workshop/<int:id>/",
+        views.WorkshopDetailView.as_view(),
+        name="workshop_detail",
     ),
 ]

@@ -7,12 +7,13 @@ from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
 from efood_main.apps.accounts.forms import UserProfileForm
 from efood_main.apps.accounts.models import UserProfile
 from efood_main.apps.recipe.forms import CategoryForm, RecipeItemForm
 from efood_main.apps.recipe.models import Category, RecipeItem
 from efood_main.apps.workshop.forms import WorkshopItemForm
-from efood_main.apps.workshop.models import Workshop
+from efood_main.apps.workshop.models import Workshop, WorkshopRegistration
 
 from .forms import ChefForm
 from .models import Chef
@@ -21,19 +22,38 @@ from .models import Chef
 class ChefProfileView(LoginRequiredMixin, TemplateView):
     template_name = "chef/chef_profile.html"
 
-    def get(self, request, *args, **kwargs):
-        profile = get_object_or_404(UserProfile, user=request.user)
-        chef = get_object_or_404(Chef, user=request.user)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Fetch UserProfile and Chef objects or return a 404 response
+        profile = get_object_or_404(UserProfile, user=self.request.user)
+        chef = get_object_or_404(Chef, user=self.request.user)
+
+        # Create a combined form with both UserProfileForm and ChefForm
+        combined_form = self.get_combined_form(profile, chef)
+
+        context["combined_form"] = combined_form
+        context["profile"] = profile
+        context["chef"] = chef
+        return context
+
+    def get_combined_form(self, profile, chef):
+        # Initialize UserProfileForm and ChefForm with instances
         profile_form = UserProfileForm(instance=profile)
         chef_form = ChefForm(instance=chef)
 
-        context = {
+        # Combine both forms into a single form
+        combined_form = {
             "profile_form": profile_form,
             "chef_form": chef_form,
-            "profile": profile,
-            "chef": chef,
         }
-        return render(request, self.template_name, context)
+        return combined_form
+
+    def form_valid(self, form):
+        form["profile_form"].save()
+        form["chef_form"].save()
+        messages.success(self.request, "Profile updated.")
+        return redirect("chef")
 
     def post(self, request, *args, **kwargs):
         profile = get_object_or_404(UserProfile, user=request.user)
@@ -42,22 +62,13 @@ class ChefProfileView(LoginRequiredMixin, TemplateView):
         profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
         chef_form = ChefForm(request.POST, request.FILES, instance=chef)
 
-        if profile_form.is_valid() and chef_form.is_valid():
-            profile_form.save()
-            chef_form.save()
-            messages.success(request, "Profile updated.")
-            return redirect("chef_profile")
-        else:
-            print(profile_form.errors)
-            print(chef_form.errors)
-
-        context = {
+        combined_form = {
             "profile_form": profile_form,
             "chef_form": chef_form,
-            "profile": profile,
-            "chef": chef,
         }
-        return render(request, self.template_name, context)
+
+        if profile_form.is_valid():
+            return self.form_valid(combined_form)
 
 
 class ChefViewMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -205,11 +216,73 @@ class RecipeDetailView(ChefViewMixin, DetailView):
         return get_object_or_404(RecipeItem, slug=slug, id=recipe_id, chef=chef)
 
 
+# Workshop CRUD
 class ChefWorkshopBuilder(ChefViewMixin, ListView):
     model = Workshop
-    template_name = "chef/workshop_builder.html"
+    template_name = "workshop/workshop_builder.html"
     context_object_name = "workshops"
 
     def get_queryset(self):
         # Filter workshops based on the currently logged-in chef
         return Workshop.objects.filter(chef=self.chef)
+
+
+class AddWorkshopView(ChefViewMixin, SuccessMessageMixin, CreateView):
+    model = Workshop
+    form_class = WorkshopItemForm
+    template_name = "workshop/add_workshop.html"
+    success_message = "Workshop added successfully!"
+    success_url = reverse_lazy("workshop_builder")
+
+    def form_valid(self, form):
+        form.instance.chef = self.chef
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["chef"] = self.chef
+        return kwargs
+
+
+class EditWorkshopView(ChefViewMixin, SuccessMessageMixin, UpdateView):
+    model = Workshop
+    form_class = WorkshopItemForm
+    template_name = "workshop/edit_workshop.html"
+    success_url = reverse_lazy("workshop_builder")
+    success_message = "Workshop updated successfully!"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Workshop, pk=self.kwargs["pk"], chef=self.chef)
+
+    def form_valid(self, form):
+        workshop = form.save(commit=False)
+        workshop.chef = self.chef
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["chef"] = self.chef
+        return kwargs
+
+
+class WorkshopDeleteView(ChefViewMixin, DeleteView):
+    model = Workshop
+    template_name = "workshop/workshop_confirm_delete.html"
+    success_url = reverse_lazy("workshop_builder")
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Workshop, pk=self.kwargs["pk"], chef=self.chef)
+
+
+class WorkshopDetailView(ChefViewMixin, DetailView):
+    model = Workshop
+    template_name = "workshop/workshop_detail.html"
+
+    # def get_queryset(self):
+    # workshop_id = self.kwargs["id"]
+    #     return RecipeItem.objects.filter(id=workshop_id)
+
+    def get_object(self, queryset=None):
+        chef = self.chef
+        workshop_id = self.kwargs["id"]
+        return get_object_or_404(Workshop, id=workshop_id, chef=chef)

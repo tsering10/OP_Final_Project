@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Workshop
 
 
@@ -17,4 +18,13 @@ class WorkshopItemForm(forms.ModelForm):
             "price",
             "contact_phone",
             "recipe",
+            # "chef",
         ]
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "time": forms.TimeInput(attrs={"type": "time"}),
+        }
+
+    def __init__(self, chef, *args, **kwargs):
+        super(WorkshopItemForm, self).__init__(*args, **kwargs)
+        self.fields["recipe"].queryset = chef.recipeitem_set.all()

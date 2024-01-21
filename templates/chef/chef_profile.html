@@ -46,10 +46,10 @@
 																<div class="text-holder">
 																	<label>Update Profile Picture</label>
 																	<div class="upload-gallery">
-																		{{profile_form.profile_picture}}
+																		{{combined_form.profile_form.profile_picture}}
 																	</div>
 																</div>
-																<label class="text-danger">{{ profile_form.profile_picture.errors }}</label>
+																<label class="text-danger">{{ combined_form.profile_form.profile_picture.errors }}</label>
 															</div>
 														</div>
 														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -72,11 +72,11 @@
 																<div class="text-holder">
 																	<label>Update Cover Photo</label>
 																	<div class="upload-gallery">
-																		{{profile_form.cover_photo}}
+																		{{combined_form.profile_form.cover_photo}}
 																	</div>
 																	
 																</div>
-																<label class="text-danger">{{ profile_form.cover_photo.errors }}</label>
+																<label class="text-danger">{{ combined_form.profile_form.cover_photo.errors }}</label>
 															</div>
 														</div>
 														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -95,23 +95,23 @@
 																<div class="text-holder">
 																	<label>Update License</label>
 																	<div class="upload-gallery">
-																		{{chef_form.chef_license}}
+																		{{combined_form.chef_form.chef_license}}
 																	</div>
 																	
 																</div>
-																<label class="text-danger">{{ chef_form.chef_license.errors }}</label>
+																<label class="text-danger">{{ combined_form.chef_form.chef_license.errors }}</label>
 															</div>
 														</div>
 														<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 															<div class="field-holder">
 																<label>Chef name *</label>
-																{{chef_form.chef_name}}
+																{{combined_form.chef_form.chef_name}}
 															</div>
 														</div>
                                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 															<div class="field-holder">
 																<label>Address *</label>
-																{{profile_form.address}}
+																{{combined_form.profile_form.address}}
 																{% comment %} <small class="text-muted float-right">powered by Google</small> {% endcomment %}
 															</div>
 														</div>
@@ -120,28 +120,28 @@
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
 																<label>Country *</label>
-																{{profile_form.country}}
+																{{combined_form.profile_form.country}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
 																<label>State *</label>
-																{{profile_form.state}}
+																{{combined_form.profile_form.state}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
 																<label>City *</label>
-																{{profile_form.city}}
+																{{combined_form.profile_form.city}}
 															</div>
 														</div>
 
                                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 															<div class="field-holder">
 																<label>Pin Code *</label>
-																{{profile_form.postal_code}}
+																{{combined_form.profile_form.postal_code}}
 															</div>
 														</div>
 													</div>
