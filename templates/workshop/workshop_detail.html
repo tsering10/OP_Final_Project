@@ -23,6 +23,8 @@
                                 <div class="justify-content-center row">
                                     <div class="col-md-12">
                                         <div class="bg-white p-1">
+                                            <button class="btn btn-secondary" onclick="history.back()"><i class="fa fa-angle-left" aria-hidden="true"></i> Back</button>
+                                            <br><br>
                                             <img src="{% static 'logo/base_logo.png' %}" alt="chefRecipe Logo" width="300">
                                             <br><br>
                                             <div class="row">
@@ -53,14 +55,7 @@
                                             <hr>
                                             
                                             <p><strong>Description:</strong> {{ workshop.description }}</p>
-                                            <p><strong>Instructions:</strong> {{ recipe.recipe_instructions }}</p>
-                                            {% if recipe.external_link %}
-                                            <p><i class="fa fa-link" aria-hidden="true"><a href="{{ recipe.external_link }}" target="_blank" > {{ recipe.external_link }}</i></a></p>
-                                            {% endif %}
-
-                                            {% if recipe.image %}
-                                            <img src="{{ recipe.image.url }}" alt="{{ recipe.recipe_title }}" width="200">
-                                            {% endif %}
+                                            
 
                                             
                                             <hr>

@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.text import slugify
 from django.views.generic import DetailView, ListView, TemplateView
@@ -278,6 +278,4 @@ class WorkshopDetailView(ChefViewMixin, DetailView):
     template_name = "workshop/workshop_detail.html"
 
     def get_object(self, queryset=None):
-        chef = self.chef
-        workshop_id = self.kwargs["id"]
-        return get_object_or_404(Workshop, id=workshop_id, chef=chef)
+        return get_object_or_404(Workshop, id=self.kwargs["id"], chef=self.chef)
