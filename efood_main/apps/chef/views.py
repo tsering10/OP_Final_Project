@@ -223,7 +223,6 @@ class ChefWorkshopBuilder(ChefViewMixin, ListView):
     context_object_name = "workshops"
 
     def get_queryset(self):
-        # Filter workshops based on the currently logged-in chef
         return Workshop.objects.filter(chef=self.chef)
 
 
@@ -277,10 +276,6 @@ class WorkshopDeleteView(ChefViewMixin, DeleteView):
 class WorkshopDetailView(ChefViewMixin, DetailView):
     model = Workshop
     template_name = "workshop/workshop_detail.html"
-
-    # def get_queryset(self):
-    # workshop_id = self.kwargs["id"]
-    #     return RecipeItem.objects.filter(id=workshop_id)
 
     def get_object(self, queryset=None):
         chef = self.chef
