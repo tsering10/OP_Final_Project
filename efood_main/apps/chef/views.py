@@ -13,7 +13,7 @@ from efood_main.apps.accounts.models import UserProfile
 from efood_main.apps.recipe.forms import CategoryForm, RecipeItemForm
 from efood_main.apps.recipe.models import Category, RecipeItem
 from efood_main.apps.workshop.forms import WorkshopItemForm
-from efood_main.apps.workshop.models import Workshop, WorkshopRegistration
+from efood_main.apps.workshop.models import Workshop
 
 from .forms import ChefForm
 from .models import Chef

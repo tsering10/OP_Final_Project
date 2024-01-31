@@ -5,13 +5,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.views.generic import CreateView, TemplateView
+
 from efood_main.apps.chef.forms import ChefForm
+from efood_main.apps.recipe.models import Category, RecipeItem
 
 from .forms import UserForm
 from .models import User, UserProfile
@@ -251,9 +255,38 @@ class CustDashboardView(CustomerView, TemplateView):
 
 
 class ChefDashboardView(ChefView, TemplateView):
+    # model = Category
     template_name = "accounts/Chefdashboard.html"
+
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["chef"] = self.request.user.chef
+        chef = self.request.user.chef
+
+        # Add category counts to the context
+        category_counts = (
+            Category.objects.filter(chef=chef)
+            .values("category_name")
+            .annotate(count=Count("id"))
+        )
+        total_category_count = sum(item["count"] for item in category_counts)
+        total_recipe_items_count = RecipeItem.objects.filter(chef=chef).count()
+
+        page = self.request.GET.get("page")
+        recipe_items = RecipeItem.objects.filter(chef=chef).order_by("created_at")
+        paginator = Paginator(recipe_items, self.paginate_by)
+
+        try:
+            recipe_items_page = paginator.page(page)
+        except PageNotAnInteger:
+            recipe_items_page = paginator.page(1)
+        except EmptyPage:
+            recipe_items_page = paginator.page(paginator.num_pages)
+
+        context["recipe_items_page"] = recipe_items_page
+
+        context["total_category_count"] = total_category_count
+        context["total_recipe_items_count"] = total_recipe_items_count
+
         return context
