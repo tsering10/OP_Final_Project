@@ -1,10 +1,9 @@
 <div class="user-account-nav user-account-sidebar">
     <div class="user-nav-list">
         <ul>
-            <li class="active"><a href="{% url 'customerDashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
-            <li><a href="#"><i class="icon-build"></i>Profile Setting</a></li>
-            <li><a href="#"><i class="icon-menu5"></i>Favorite Recipe</a></li>
-            <li><a href="#"><i class="icon-file-text2"></i>Workshop</a></li>
+            <li ><a href="{% url 'customerDashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
+            <li ><a href="{% url 'cust_profile' %}"><i class="icon-build"></i>Profile Setting</a></li>
+            <li ><a href="{% url 'customer_workshop' %}"><i class="icon-menu5"></i>My Workshops</a></li>
             <li><a class="logout-btn" href={% url 'logout' %}><i class="icon-log-out"></i>Signout</a></li>
         </ul>
     </div>

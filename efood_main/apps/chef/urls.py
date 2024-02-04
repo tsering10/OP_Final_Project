@@ -5,7 +5,7 @@ from efood_main.apps.accounts import views as account_views
 from . import views
 
 urlpatterns = [
-    path("", account_views.CustDashboardView.as_view(), name="chef"),
+    path("", account_views.ChefDashboardView.as_view(), name="chef"),
     path("profile/", views.ChefProfileView.as_view(), name="chef_profile"),
     path("recipe-builder/", views.ChefRecipeBuilder.as_view(), name="recipe_builder"),
     path(

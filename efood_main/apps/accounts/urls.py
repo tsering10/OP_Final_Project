@@ -1,18 +1,18 @@
-from django.urls import path, include
+from django.urls import include, path
+
 from .views import (
-    RegisterChefView,
-    RegisterUserView,
-    LoginView,
-    LogoutView,
+    ActivateView,
     ChefDashboardView,
     CustDashboardView,
-    ActivateView,
     ForgotPasswordView,
+    LoginView,
+    LogoutView,
+    RegisterActivationView,
+    RegisterChefView,
+    RegisterUserView,
     ResetPasswordValidateView,
     ResetPasswordView,
-    RegisterActivationView,
 )
-
 
 urlpatterns = [
     path(
@@ -43,4 +43,5 @@ urlpatterns = [
     ),
     path("reset_password/", ResetPasswordView.as_view(), name="reset_password"),
     path("chef/", include("efood_main.apps.chef.urls")),
+    path("customer/", include("efood_main.apps.customers.urls")),
 ]

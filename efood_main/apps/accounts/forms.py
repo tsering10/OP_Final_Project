@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import User, UserProfile
 from .validator import custom_validator
 
@@ -49,3 +50,9 @@ class UserProfileForm(forms.ModelForm):
             "state",
             "postal_code",
         ]
+
+
+class UserInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "phone_number"]

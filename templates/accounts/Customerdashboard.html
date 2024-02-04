@@ -6,37 +6,7 @@
 
 <!-- Main Section Start -->
 <div class="main-section">
-    <div class="page-section restaurant-detail-image-section" style=" background: url({% static 'extra-images/cover-photo01.jpg' %}) no-repeat scroll 0 0 / cover;">
-        <!-- Container Start -->
-        <div class="container">
-            <!-- Row Start -->
-            <div class="row">
-                <!-- Column Start -->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="company-info-detail">
-                        <div class="company-info">
-                            <div class="img-holder">
-                                <figure>
-                                    <img src="assets/extra-images/listing-logo18.png" alt="">
-                                </figure>
-                            </div>
-
-                            <div class="text-holder">
-                                <span class="restaurant-title">{{ request.user.chef }}</span>
-                                <div class="text">
-                                    <i class="icon-location"></i>
-                                    <p>Paris, France.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Column End -->
-            </div>
-            <!-- Row End -->
-        </div>
-        <!-- Container End -->
-    </div>
+    {% include 'customers/customer_cover.html' %}
     <div class="page-section account-header buyer-logged-in">
         <div class="container">
             <div class="row">
@@ -48,24 +18,10 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
+                            <h5 class="text-uppercase">Overview</h5>
+                            <p class="text-right">Logged in as: <b>{{ user.email }}</b></p>
                             
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <div class="row">
-                                    <div class="element-title has-border right-filters-row">
-
-                                        <h5>REDFDFDF</h5>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div class="user-orders-list">
-                                        <div class="responsive-table">
-                                           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
-                                        </div>												
-                                    </div>
-                                </div>
+                            
                             </div>
                             
                         </div>
