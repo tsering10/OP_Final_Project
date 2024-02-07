@@ -1,17 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView
-from django.views.generic.edit import UpdateView
 
 from efood_main.apps.accounts.forms import UserInfoForm, UserProfileForm
 from efood_main.apps.accounts.models import UserProfile
+from efood_main.apps.workshop.models import Workshop
 
 
-class ChefViewMixin(LoginRequiredMixin, UserPassesTestMixin):
+class CustomerViewMixin(LoginRequiredMixin, UserPassesTestMixin):
     def test_func(self):
         try:
             self.customer = self.request.user.is_customer
@@ -20,7 +18,7 @@ class ChefViewMixin(LoginRequiredMixin, UserPassesTestMixin):
             return False
 
 
-class CustomerProfileView(ChefViewMixin, TemplateView):
+class CustomerProfileView(CustomerViewMixin, TemplateView):
     template_name = "customers/customer_profile.html"
 
     def get_context_data(self, **kwargs):
@@ -70,5 +68,19 @@ class CustomerProfileView(ChefViewMixin, TemplateView):
             return self.form_valid(combined_form)
 
 
-class CustomerWorkshopsView(ChefViewMixin, TemplateView):
+class CustomerWorkshopsListView(CustomerViewMixin, ListView):
+    model = Workshop
     template_name = "customers/customer_workshop.html"
+    context_object_name = "workshops"
+    paginate_by = 2
+
+    def get_queryset(self):
+        return super().get_queryset().order_by("-date")
+
+
+class CustomerWorkshopDetail(CustomerViewMixin, DetailView):
+    model = Workshop
+    template_name = "customers/customer_workshop_detail.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Workshop, id=self.kwargs["id"])

@@ -1,1 +1,93 @@
-<h1> Customer workshop </h1> 
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+{% include 'includes/alerts.html' %}
+
+<!-- Main Section Start -->
+<div class="main-section">
+    <div class="page-section account-header buyer-logged-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- Load the sidebar here -->
+                    {% include 'includes/customer_sidebar.html' %}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h5 class="text-uppercase">Cooking Workshops </h5>
+                            <hr>
+                            <button class="btn btn-secondary" onclick="history.back()"><i class="fa fa-angle-left" aria-hidden="true"></i> Back</button>
+                            <br><br>
+                            <div class="row">
+                              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                  <div class="user-orders-list responsive-table">
+                                    <br>
+                                        <br>
+                                        <ul class="table-generic" id="portfolio">
+                                            <li>
+                                                <div class="orders-title">No.</div>
+                                                <div class="orders-date">Title</div>
+                                                <div class="orders-type">Date & Time</div>
+                                                <div class="orders-type">Price</div>
+                                                <div class="orders-type">Detail</div>
+
+                                            </li>
+                                            {% for workshop in workshops %}
+                                            <li>
+                                                <div class="orders-title">
+                                                    <span> {{ forloop.counter }} </span>
+                                                </div>
+                                                <div class="orders-title">
+                                                    <span>{{workshop.title}}</span>
+
+                                                </div>
+                                                <div class="orders-date">
+                                                    <span>{{workshop.date}} {{workshop.time}}</span>
+                                                </div>
+                                                <div class="orders-date">
+                                                  <span>{{workshop.price}} / pers.</span>
+                                              </div>
+                                              <div class="orders-status">
+                                                <a href="{% url 'cust-workshop-detail' workshop.id %}"> <span class="booking-status" style="background-color: #047a06;">Reserve </a></span>
+                                              </div>
+
+                                            </li>
+
+                                            {% endfor %}
+                                          </ul>
+                                          <div class="pagination justify-content-center" >
+                                            <span class="step-links">
+                                                {% if page_obj.has_previous %}
+                                                    <a href="?page=1">&laquo; first</a>
+                                                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                                {% endif %}
+
+                                                <span class="current">
+                                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                                </span>
+
+                                                {% if page_obj.has_next %}
+                                                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section End -->
+{% endblock %}

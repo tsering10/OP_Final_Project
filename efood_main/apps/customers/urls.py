@@ -8,6 +8,13 @@ urlpatterns = [
     path("", account_views.CustDashboardView.as_view(), name="customer"),
     path("c-profile/", views.CustomerProfileView.as_view(), name="cust_profile"),
     path(
-        "my_workshop/", views.CustomerWorkshopsView.as_view(), name="customer_workshop"
+        "workshop/",
+        views.CustomerWorkshopsListView.as_view(),
+        name="customer_workshop",
+    ),
+    path(
+        "workshop-detail/<int:id>",
+        views.CustomerWorkshopDetail.as_view(),
+        name="cust-workshop-detail",
     ),
 ]
