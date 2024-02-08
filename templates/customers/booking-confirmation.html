@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="main-section">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 60px;margin-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <div id="restaurant-sets-holder">
+                                <form class="form-fields-set foodbakery-dev-restaurant-form" method="post">
+                                    <ul class="register-add-restaurant-tab-container activation-tab-container" style="display: block;">
+                                        <li>
+                                            <div class="activation-tab-message">
+                                                <div class="media-holder">
+                                                    <figure>
+                                                        <img src={% static 'extra-images/emailActivation.png' %} alt="Thank You">
+                                                    </figure>
+                                                </div>
+                                                <div class="text-holder">
+                                                    <strong>Thank You</strong>
+                                                    <span>You have successfully booked your workshop, to know more
+                                                        about your booking, go
+                                                        to your email inbox for more details.</span>
+                                                </div>
+                                                <div class="thankyou-contacts">
+                                                    <p>For more infomation Please Contact Us</p>
+                                                    <ul class="list-inline clearfix">
+                                                        <li><i class="icon-phone4"></i>+33 321 828 6662</li>
+                                                        <li><i class="icon-envelope-o"></i>support@chefsrecipe.com</li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

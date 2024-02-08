@@ -7,7 +7,6 @@
 <!-- Main Section Start -->
 <div class="main-section">
 
-    {% comment %} {% include 'includes/cover.html' %} {% endcomment %}
     <div class="page-section account-header buyer-logged-in">
         <div class="container">
             <div class="row">
@@ -33,10 +32,8 @@
                                                 </div>
 
                                             </div>
-
-                                            <h6>Created By: {{ workshop.chef }} </h6>
+                                            <h6>Workshop leader: {{ workshop.chef }} </h6>
                                             <hr>
-
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                    <span class="d-block">Workshop Date: </span><span class="font-weight-bold">{{ workshop.date }}</span>
@@ -53,22 +50,18 @@
 
                                             </div>
                                             <hr>
+                                            <p><i class="icon-file-text2"></i><strong> Description:</strong> {{ workshop.description }}</p>
 
-                                            <p><strong>Description:</strong> {{ workshop.description }}</p>
-
-
+                                            <p><i class="icon-location-pin2"></i><strong> Contact details:</strong> {{workshop.address}}</p>
+                                            <p><i class="icon-ring_volume"></i><strong> Contact details:</strong> {{workshop.contact_phone}}</p>
 
                                             <hr>
-                                            <div class="d-flex justify-content-between">
-                                                <div>
-                                                    <span class="d-block font-weight-bold">Thank you for trusting us!</span>
-                                                    <span>Chef's Recipe Team</span>
-                                                </div>
-                                                <div class="d-flex justify-content-end align-items-end">
-                                                    <span class="d-block font-weight-bold">Need help? </span>
-                                                    <span> Call - +33 0011223344</span>
-                                                </div>
-                                            </div>
+
+                                            <form action="{% url 'book-workshop' workshop_id=workshop.id %}" method="post">
+                                              {% csrf_token %}
+                                              <button type="submit" class="btn btn-danger btn-lg">Book Now</button>
+                                          </form>
+
                                         </div>
                                     </div>
                                 </div>

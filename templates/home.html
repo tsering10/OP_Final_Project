@@ -11,14 +11,14 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                     <div class="element-title">
-                        <h1 
+                        <h1
                             style="font-size: 40px; color: #505050; text-transform: uppercase; line-height: 50px; margin-bottom: 25px; text-align:center;">
                             Find some of our best recipes </h1>
                     </div>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                     <div class="main-search fancy bg-holder">
-                        
+
                         <!-- form -->
                         <form>
                             <div class="row">
@@ -41,20 +41,69 @@
 
         </div>
     </div>
-        <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 50px;margin-bottom: 0px;background: #ffffff;">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="element-title align-center">
-                            <h2>Featured Recipe </h2>
-                            <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
-                        </div>
-                    </div>
-                </div>
-        </div>
-    </div>
-</div>
-<!-- Main Search End -->
+    <!-- Choose From Most Popular Listin Start -->
+			<div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 50px;margin-bottom: 0px;background: #ffffff;">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="element-title align-center">
+								<h2>Our Featured Recipes</h2>
+								<p>Some of our best recipes developed by our best chefs.</p>
+							</div>
+						</div>
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="listing fancy">
+								<ul class="row">
+                  {% for recipe in recipe_items%}
+
+									<li class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<div class="list-post featured">
+											<div class="img-holder">
+                        {% if recipe.image %}
+												<figure><img src="{{recipe.image.url}}" class="img-thumb wp-post-image" alt=""></figure>
+                        {% else %}
+                        <figure><img src="{% static 'images/default-recipe.png' %}" class="img-thumb wp-post-image" alt=""></figure>
+                        {% endif %}
+												<span class="restaurant-status open">
+													<em class="bookmarkRibbon"></em>Top
+												</span>
+											</div>
+											<div class="text-holder">
+												<div class="post-title">
+													<h5>
+														<a href="{% url 'login' %}">{{recipe.recipe_title}}</a>
+														<span class="sponsored text-color">Sponsored</span>
+													</h5>
+												</div>
+												<address> <span>Type of category : </span> {{recipe.category}}</address>
+												<div class="delivery-potions">
+													<div class="post-time">
+														<i class="icon-clock4"></i>
+														<div class="time-tooltip">
+															<div class="time-tooltip-holder"> <b class="tooltip-label">Preparation Time</b>
+																<b class="tooltip-info">{{recipe.formatted_preparation_time}}</b> </div>
+														</div>
+													</div>
+													<span>Time</span>
+												</div>
+											</div>
+											<div class="list-option">
+												<a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
+													<i class="icon-heart-o"></i>
+												</a>
+											</div>
+										</div>
+									</li>
+                  {% endfor %}
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Choose From Most Popular Listing End -->
+
 
 
 

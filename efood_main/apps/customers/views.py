@@ -1,12 +1,15 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import send_mail
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import DetailView, ListView, TemplateView
 
 from efood_main.apps.accounts.forms import UserInfoForm, UserProfileForm
 from efood_main.apps.accounts.models import UserProfile
-from efood_main.apps.workshop.models import Workshop
+from efood_main.apps.workshop.models import Workshop, WorkshopRegistration
 
 
 class CustomerViewMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -84,3 +87,37 @@ class CustomerWorkshopDetail(CustomerViewMixin, DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Workshop, id=self.kwargs["id"])
+
+
+class WorkshopBookConfirmation(CustomerViewMixin, TemplateView):
+    template_name = "customers/booking-confirmation.html"
+
+
+class CustWorkshopBook(CustomerViewMixin, TemplateView):
+    def post(self, request, *args, **kwargs):
+        workshop_id = self.kwargs.get("workshop_id")
+        workshop = get_object_or_404(Workshop, id=workshop_id)
+
+        if workshop.capacity > 0:
+            # Decrease the capacity
+            workshop.capacity -= 1
+            workshop.save()
+
+            # Register the user for the workshop
+            WorkshopRegistration.objects.create(
+                customer=request.user, workshop=workshop
+            )
+            # Send confirmation emails
+            send_mail(
+                "Workshop Booking Confirmation",
+                f"You have successfully booked {workshop.title}. On {workshop.date}{workshop.time}",
+                settings.EMAIL_HOST_USER,
+                [
+                    request.user.email,
+                    workshop.chef.user.email,
+                ],  # Assuming chef has a user attribute with an email
+                fail_silently=False,
+            )
+            return redirect("workshop-confirmation")
+        else:
+            return redirect("customer_workshop")
