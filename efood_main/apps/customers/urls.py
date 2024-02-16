@@ -14,7 +14,7 @@ urlpatterns = [
     path("c-profile/", views.CustomerProfileView.as_view(), name="cust_profile"),
     path(
         "workshop/",
-        views.CustomerWorkshopsListView.as_view(),
+        views.UserBookedWorkshopsView.as_view(),
         name="customer_workshop",
     ),
     path(
