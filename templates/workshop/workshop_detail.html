@@ -6,8 +6,6 @@
 
 <!-- Main Section Start -->
 <div class="main-section">
-    
-    {% comment %} {% include 'includes/cover.html' %} {% endcomment %}
     <div class="page-section account-header buyer-logged-in">
         <div class="container">
             <div class="row">
@@ -18,7 +16,7 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
-                           
+
                             <div class="container">
                                 <div class="justify-content-center row">
                                     <div class="col-md-12">
@@ -31,12 +29,12 @@
                                                 <div class="col-md-12">
                                                     <h4 class="mt-2 mb-3">Workshop Title: {{workshop.title}}</h4>
                                                 </div>
-                                        
+
                                             </div>
-                                            
+
                                             <h6>Created By: {{ workshop.chef }} </h6>
                                             <hr>
-                            
+
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                    <span class="d-block">Workshop Date: </span><span class="font-weight-bold">{{ workshop.date }}</span>
@@ -50,14 +48,12 @@
                                                 <div>
                                                     <span class="d-block">Price /pers. </span><span class="font-weight-bold">{{ workshop.price }}</span>
                                                 </div>
-                                                
+
                                             </div>
                                             <hr>
-                                            
-                                            <p><strong>Description:</strong> {{ workshop.description }}</p>
-                                            
 
-                                            
+                                            <p><strong>Description:</strong> {{ workshop.description }}</p>
+
                                             <hr>
                                             <div class="d-flex justify-content-between">
                                                 <div>
@@ -73,7 +69,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>

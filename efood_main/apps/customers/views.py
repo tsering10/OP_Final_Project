@@ -3,7 +3,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import DetailView, ListView, TemplateView
 
@@ -71,14 +70,14 @@ class CustomerProfileView(CustomerViewMixin, TemplateView):
             return self.form_valid(combined_form)
 
 
-class CustomerWorkshopsListView(CustomerViewMixin, ListView):
-    model = Workshop
-    template_name = "customers/customer_workshop.html"
-    context_object_name = "workshops"
-    paginate_by = 2
+# class CustomerWorkshopsListView(CustomerViewMixin, ListView):
+#     model = Workshop
+#     template_name = "customers/customer_workshop.html"
+#     context_object_name = "workshops"
+#     paginate_by = 2
 
-    def get_queryset(self):
-        return super().get_queryset().order_by("-date")
+#     def get_queryset(self):
+#         return super().get_queryset().order_by("-date")
 
 
 class CustomerWorkshopDetail(CustomerViewMixin, DetailView):
@@ -110,7 +109,8 @@ class CustWorkshopBook(CustomerViewMixin, TemplateView):
             # Send confirmation emails
             send_mail(
                 "Workshop Booking Confirmation",
-                f"You have successfully booked {workshop.title}. On {workshop.date}{workshop.time}",
+                f"You have successfully booked {workshop.title} \
+                    . On {workshop.date}{workshop.time}",
                 settings.EMAIL_HOST_USER,
                 [
                     request.user.email,
@@ -121,3 +121,24 @@ class CustWorkshopBook(CustomerViewMixin, TemplateView):
             return redirect("workshop-confirmation")
         else:
             return redirect("customer_workshop")
+
+
+class CustomerBookedWorkshopsView(CustomerViewMixin, ListView):
+    model = WorkshopRegistration
+    template_name = (
+        "customers/customer_workshop.html"  # Specify your template name here
+    )
+    context_object_name = "booked_workshops"
+
+    def get_queryset(self):
+        # Get unique workshop IDs for the current user's non-canceled registrations
+        workshop_ids = (
+            WorkshopRegistration.objects.filter(
+                customer=self.request.user, is_canceled=False
+            )
+            .values_list("workshop_id", flat=True)
+            .distinct()
+        )
+
+        # Query Workshop model for those unique IDs
+        return Workshop.objects.filter(id__in=workshop_ids).distinct()

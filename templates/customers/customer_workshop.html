@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block content %}
@@ -7,6 +6,7 @@
 
 <!-- Main Section Start -->
 <div class="main-section">
+
     <div class="page-section account-header buyer-logged-in">
         <div class="container">
             <div class="row">
@@ -17,70 +17,60 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
-                            <h5 class="text-uppercase">Cooking Workshops </h5>
-                            <hr>
-                            <button class="btn btn-secondary" onclick="history.back()"><i class="fa fa-angle-left" aria-hidden="true"></i> Back</button>
-                            <br><br>
-                            <div class="row">
-                              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                  <div class="user-orders-list responsive-table">
-                                    <br>
-                                        <br>
-                                        <ul class="table-generic" id="portfolio">
-                                            <li>
-                                                <div class="orders-title">No.</div>
-                                                <div class="orders-date">Title</div>
-                                                <div class="orders-type">Date & Time</div>
-                                                <div class="orders-type">Price</div>
-                                                <div class="orders-type">Detail</div>
 
-                                            </li>
-                                            {% for workshop in workshops %}
-                                            <li>
-                                                <div class="orders-title">
-                                                    <span> {{ forloop.counter }} </span>
+                            <div class="container">
+                                <div class="justify-content-center row">
+                                    <div class="col-md-12">
+                                        <div class="bg-white p-1">
+                                            <button class="btn btn-secondary" onclick="history.back()"><i class="fa fa-angle-left" aria-hidden="true"></i> Back</button>
+                                            <br><br>
+                                            <div class="listing-sorting-holder">
+                                              <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                  <h4>Your reserved workshops : </h4>
                                                 </div>
-                                                <div class="orders-title">
-                                                    <span>{{workshop.title}}</span>
-
-                                                </div>
-                                                <div class="orders-date">
-                                                    <span>{{workshop.date}} {{workshop.time}}</span>
-                                                </div>
-                                                <div class="orders-date">
-                                                  <span>{{workshop.price}} / pers.</span>
                                               </div>
-                                              <div class="orders-status">
-                                                <a href="{% url 'cust-workshop-detail' workshop.id %}"> <span class="booking-status" style="background-color: #047a06;">Reserve </a></span>
-                                              </div>
+                                            </div>
+                                            <div class="listing simple">
+                                              <ul>
+                                                {% for booking in booked_workshops %}
+                                                <li>
+                                                  <div class="img-holder">
+                                                    <figure>
+                                                      <a href="#"><img src="assets/extra-images/listing-logo18.png" class="img-list wp-post-image" alt=""></a>
+                                                    </figure>
+                                                    <span class="restaurant-status open"><em class="bookmarkRibbon"></em>Status: {% if booking.is_canceled %} Canceled {% else %} Active {% endif %}</span>
+                                                  </div>
+                                                  <div class="text-holder">
+                                                    <div class="post-title">
+                                                      <h5>
+                                                        <a href="listing-detail.html">{{ booking.title }}</a>
+                                                      </h5>
+                                                    </div>
+                                                    <div class="delivery-potions">
+                                                      <div class="post-time">
+                                                        <i class="icon-clock4"></i>
+                                                        <div class="time-tooltip">
+                                                          <div class="time-tooltip-holder"> <b class="tooltip-label">Workshop date &
+                                                              time</b> <b class="tooltip-info">{{booking.date}} {{booking.time}}</b> </div>
+                                                        </div>
+                                                      </div>
+                                                      <span>Date & Time</span>
+                                                    </div>
+                                                  </div>
+                                                  <div class="list-option">
 
-                                            </li>
-
-                                            {% endfor %}
-                                          </ul>
-                                          <div class="pagination justify-content-center" >
-                                            <span class="step-links">
-                                                {% if page_obj.has_previous %}
-                                                    <a href="?page=1">&laquo; first</a>
-                                                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                                                {% endif %}
-
-                                                <span class="current">
-                                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                                                </span>
-
-                                                {% if page_obj.has_next %}
-                                                    <a href="?page={{ page_obj.next_page_number }}">next</a>
-                                                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                                                {% endif %}
-                                            </span>
+                                                    <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in"><i class="icon-heart4"></i> </a>
+                                                    <a href="{% url 'cust-workshop-detail' booking.id %}" class="viewmenu-btn text-color">View Detail</a>
+                                                  </div>
+                                                </li>
+                                                {% endfor %}
+                                              </ul>
+                                            </div>
                                         </div>
-                                  </div>
+                                    </div>
                                 </div>
-                              </div>
-
-
-
+                            </div>
 
                         </div>
                     </div>
@@ -90,4 +80,6 @@
     </div>
 </div>
 <!-- Main Section End -->
+
+
 {% endblock %}

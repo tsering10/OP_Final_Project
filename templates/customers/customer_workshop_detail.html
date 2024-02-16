@@ -52,14 +52,18 @@
                                             <hr>
                                             <p><i class="icon-file-text2"></i><strong> Description:</strong> {{ workshop.description }}</p>
 
-                                            <p><i class="icon-location-pin2"></i><strong> Contact details:</strong> {{workshop.address}}</p>
+                                            <p><i class="icon-location-pin2"></i><strong>Place :</strong> {{workshop.address}}</p>
                                             <p><i class="icon-ring_volume"></i><strong> Contact details:</strong> {{workshop.contact_phone}}</p>
 
                                             <hr>
 
                                             <form action="{% url 'book-workshop' workshop_id=workshop.id %}" method="post">
                                               {% csrf_token %}
+                                              {% if workshop.capacity > 0 %}
                                               <button type="submit" class="btn btn-danger btn-lg">Book Now</button>
+                                              {% else %}
+                                              <button type="button" class="btn btn-danger btn-lg" disabled="disabled">Sold Out</button>
+                                              {% endif %}
                                           </form>
 
                                         </div>

@@ -12,10 +12,11 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView
 
 from efood_main.apps.chef.forms import ChefForm
 from efood_main.apps.recipe.models import Category, RecipeItem
+from efood_main.apps.workshop.models import Workshop
 
 from .forms import UserForm
 from .models import User, UserProfile
@@ -250,8 +251,14 @@ class CustomerView(LoginRequiredMixin, UserPassesTestMixin):
         return super().handle_no_permission()
 
 
-class CustDashboardView(CustomerView, TemplateView):
+class CustDashboardView(CustomerView, ListView):
+    model = Workshop
     template_name = "accounts/Customerdashboard.html"
+    context_object_name = "workshops"
+    paginate_by = 2
+
+    def get_queryset(self):
+        return super().get_queryset().order_by("-date")
 
 
 class ChefDashboardView(ChefView, TemplateView):
