@@ -115,7 +115,7 @@ class CustWorkshopBook(CustomerViewMixin, TemplateView):
                 [
                     request.user.email,
                     workshop.chef.user.email,
-                ],  # Assuming chef has a user attribute with an email
+                ],
                 fail_silently=False,
             )
             return redirect("workshop-confirmation")
@@ -125,13 +125,11 @@ class CustWorkshopBook(CustomerViewMixin, TemplateView):
 
 class CustomerBookedWorkshopsView(CustomerViewMixin, ListView):
     model = WorkshopRegistration
-    template_name = (
-        "customers/customer_workshop.html"  # Specify your template name here
-    )
+    template_name = "customers/customer_workshop.html"
     context_object_name = "booked_workshops"
 
     def get_queryset(self):
-        # Get unique workshop IDs for the current user's non-canceled registrations
+        # Get unique workshop IDs for the current user's non-canceled workshop
         workshop_ids = (
             WorkshopRegistration.objects.filter(
                 customer=self.request.user, is_canceled=False
