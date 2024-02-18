@@ -70,16 +70,6 @@ class CustomerProfileView(CustomerViewMixin, TemplateView):
             return self.form_valid(combined_form)
 
 
-# class CustomerWorkshopsListView(CustomerViewMixin, ListView):
-#     model = Workshop
-#     template_name = "customers/customer_workshop.html"
-#     context_object_name = "workshops"
-#     paginate_by = 2
-
-#     def get_queryset(self):
-#         return super().get_queryset().order_by("-date")
-
-
 class CustomerWorkshopDetail(CustomerViewMixin, DetailView):
     model = Workshop
     template_name = "customers/customer_workshop_detail.html"
