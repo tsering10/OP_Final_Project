@@ -16,7 +16,6 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="user-dashboard loader-holder">
                         <div class="user-holder">
-
                             <div class="container">
                                 <div class="justify-content-center row">
                                     <div class="col-md-12">
@@ -59,8 +58,11 @@
                                                   </div>
                                                   <div class="list-option">
                                                     <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in"><i class="icon-thumbs-up2"></i> </a>
-                                                    <a href="{% url 'cust-workshop-detail' booking.id %}" class="viewmenu-btn text-color">View Detail</a>
-                                                    <a href="" class="viewmenu-btn text-color">Cancel</a>
+                                                    <a href="{% url 'cust-workshop-detail' booking.id %}" class="viewmenu-btn text-color">Detail</a>
+                                                    <form action="{% url 'cancel_workshop' booking.id %}" method="post" class="viewmenu-btn text-color">
+                                                      {% csrf_token %}
+                                                      <button type="submit"  class="viewmenu-btn text-color" style="border: none;">Cancel</button>
+                                                  </form>
                                                   </div>
                                                 </li>
                                                 {% endfor %}

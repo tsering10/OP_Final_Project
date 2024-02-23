@@ -18,13 +18,12 @@
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                     <div class="main-search fancy bg-holder">
-
                         <!-- form -->
-                        <form>
+                        <form method="get" action="{% url 'recipe_search' %}">
                             <div class="row">
                                 <div class="col-lg-8 col-md-8 col-sm-5 col-xs-12">
                                     <div class="field-holder">
-                                        <input type="text" placeholder="search for a recipe">
+                                        <input type="text" name="q" placeholder="search for a recipe" value="{{ request.GET.q }}">
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
@@ -55,7 +54,6 @@
 							<div class="listing fancy">
 								<ul class="row">
                   {% for recipe in recipe_items%}
-
 									<li class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 										<div class="list-post featured">
 											<div class="img-holder">
@@ -95,7 +93,6 @@
 										</div>
 									</li>
                   {% endfor %}
-
 								</ul>
 							</div>
 						</div>
@@ -104,9 +101,75 @@
 			</div>
 			<!-- Choose From Most Popular Listing End -->
 
-
-
-
+<!-- Testimonial Start -->
+<div class="page-section  nopadding cs-nomargin" style="margin-top: 0px; padding-top: 60px; padding-bottom: 0px; margin-bottom: 0px; background: #ffffff;">
+  <!-- Container Start -->
+  <div class="container ">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+        <div class="element-title">
+          <h1 style="color:#000 !important; text-align:Center; font-style:normal;">
+            Testimonials</h1>
+          <p style="text-align:center;">What say about Us</p>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+        <div class="row">
+          <div class="testimonial simple">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="swiper-container">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <div class="testimonial-holder">
+                      <div class="text-holder">
+                        <p>This is the place where you learn how to
+                          cook
+                          some of the best recipes with a chef physically.</p>
+                      </div>
+                      <div class="img-holder">
+                        <figure>
+                          <img src={%static "/extra-images/gender.png"%} alt="">
+                        </figure>
+                      </div>
+                      <div class="author-detail">
+                        <div class="auther-name"><span>@Christian Sandoval</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="swiper-slide">
+                    <div class="testimonial-holder">
+                      <div class="text-holder">
+                        <p>Prominent calls-to-action include “as well as easy
+                          access. to
+                          social media accounts. This company made famous
+                          for its
+                          gourmet recipes makes it easy for customers to find an
+                          inspiration for
+                          cooking.</p>
+                      </div>
+                      <div class="img-holder">
+                        <figure>
+                          <img src={%static "/extra-images/gender.png"%} alt="">
+                        </figure>
+                      </div>
+                      <div class="author-detail">
+                        <div class="auther-name"><span>@Sandoval Pro</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Container Start -->
+</div>
+<!-- Testimonial End -->
 <!-- Home Pages Elements End  -->
 </div>
 {% endblock %}
