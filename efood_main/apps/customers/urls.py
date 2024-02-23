@@ -24,7 +24,12 @@ urlpatterns = [
     ),
     path(
         "workshop/<int:workshop_id>/book/",
-        views.CustWorkshopBook.as_view(),
+        views.CustomerWorkshopBook.as_view(),
         name="book-workshop",
+    ),
+    path(
+        "workshop/<int:workshop_id>/cancel",
+        views.CustomerWorkshopCancel.as_view(),
+        name="cancel_workshop",
     ),
 ]
