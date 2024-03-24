@@ -1,175 +1,176 @@
 {% extends 'base.html' %}
 {% load static %}
-
-
 {% block content %}
 <!-- Main Section Start -->
 <div class="main-section">
-        <div class="page-section nopadding cs-nomargin main-search-bar"
-        style="padding-top: 200px; padding-bottom: 150px; margin-bottom: 0px; background: url({% static 'extra-images/banner-bg.jpg' %}) no-repeat center / cover;">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                    <div class="element-title">
-                        <h1
-                            style="font-size: 40px; color: #505050; text-transform: uppercase; line-height: 50px; margin-bottom: 25px; text-align:center;">
-                            Find some of our best recipes </h1>
-                    </div>
-                </div>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                    <div class="main-search fancy bg-holder">
-                        <!-- form -->
-                        <form method="get" action="{% url 'recipe_search' %}">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-8 col-sm-5 col-xs-12">
-                                    <div class="field-holder">
-                                        <input type="text" name="q" placeholder="search for a recipe" value="{{ request.GET.q }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
-                                    <div class="field-holder">
-                                        <input type="submit" value="Search">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <!-- form end -->
-                    </div>
-                </div>
+   <div class="page-section nopadding cs-nomargin main-search-bar"
+      style="padding-top: 200px; padding-bottom: 150px; margin-bottom: 0px; background: url({% static 'extra-images/banner-bg.jpg' %}) no-repeat center / cover;">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+               <div class="element-title">
+                  <h1
+                     style="font-size: 40px; color: #505050; text-transform: uppercase; line-height: 50px; margin-bottom: 25px; text-align:center;">
+                     Find some of our best recipes
+                  </h1>
+               </div>
             </div>
-
-        </div>
-    </div>
-    <!-- Choose From Most Popular Listin Start -->
-			<div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 50px;margin-bottom: 0px;background: #ffffff;">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<div class="element-title align-center">
-								<h2>Our Featured Recipes</h2>
-								<p>Some of our best recipes developed by our best chefs.</p>
-							</div>
-						</div>
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-							<div class="listing fancy">
-								<ul class="row">
-                  {% for recipe in recipe_items%}
-									<li class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-										<div class="list-post featured">
-											<div class="img-holder">
-                        {% if recipe.image %}
-												<figure><img src="{{recipe.image.url}}" class="img-thumb wp-post-image" alt=""></figure>
-                        {% else %}
-                        <figure><img src="{% static 'images/default-recipe.png' %}" class="img-thumb wp-post-image" alt=""></figure>
-                        {% endif %}
-												<span class="restaurant-status open">
-													<em class="bookmarkRibbon"></em>Top
-												</span>
-											</div>
-											<div class="text-holder">
-												<div class="post-title">
-													<h5>
-														<a href="{% url 'login' %}">{{recipe.recipe_title}}</a>
-														<span class="sponsored text-color">Sponsored</span>
-													</h5>
-												</div>
-												<address> <span>Type of category : </span> {{recipe.category}}</address>
-												<div class="delivery-potions">
-													<div class="post-time">
-														<i class="icon-clock4"></i>
-														<div class="time-tooltip">
-															<div class="time-tooltip-holder"> <b class="tooltip-label">Preparation Time</b>
-																<b class="tooltip-info">{{recipe.formatted_preparation_time}}</b> </div>
-														</div>
-													</div>
-													<span>Time</span>
-												</div>
-											</div>
-											<div class="list-option">
-												<a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
-													<i class="icon-heart-o"></i>
-												</a>
-											</div>
-										</div>
-									</li>
-                  {% endfor %}
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Choose From Most Popular Listing End -->
-
-<!-- Testimonial Start -->
-<div class="page-section  nopadding cs-nomargin" style="margin-top: 0px; padding-top: 60px; padding-bottom: 0px; margin-bottom: 0px; background: #ffffff;">
-  <!-- Container Start -->
-  <div class="container ">
-    <div class="row">
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-        <div class="element-title">
-          <h1 style="color:#000 !important; text-align:Center; font-style:normal;">
-            Testimonials</h1>
-          <p style="text-align:center;">What say about Us</p>
-        </div>
-      </div>
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-        <div class="row">
-          <div class="testimonial simple">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <div class="swiper-container">
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide">
-                    <div class="testimonial-holder">
-                      <div class="text-holder">
-                        <p>This is the place where you learn how to
-                          cook
-                          some of the best recipes with a chef physically.</p>
-                      </div>
-                      <div class="img-holder">
-                        <figure>
-                          <img src={%static "/extra-images/gender.png"%} alt="">
-                        </figure>
-                      </div>
-                      <div class="author-detail">
-                        <div class="auther-name"><span>@Christian Sandoval</span>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+               <div class="main-search fancy bg-holder">
+                  <!-- form -->
+                  <form method="get" action="{% url 'recipe_search' %}">
+                     <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-5 col-xs-12">
+                           <div class="field-holder">
+                              <input type="text" name="q" placeholder="search for a recipe" value="{{ request.GET.q }}">
+                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="swiper-slide">
-                    <div class="testimonial-holder">
-                      <div class="text-holder">
-                        <p>Prominent calls-to-action include “as well as easy
-                          access. to
-                          social media accounts. This company made famous
-                          for its
-                          gourmet recipes makes it easy for customers to find an
-                          inspiration for
-                          cooking.</p>
-                      </div>
-                      <div class="img-holder">
-                        <figure>
-                          <img src={%static "/extra-images/gender.png"%} alt="">
-                        </figure>
-                      </div>
-                      <div class="author-detail">
-                        <div class="auther-name"><span>@Sandoval Pro</span></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-pagination"></div>
+                        <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
+                           <div class="field-holder">
+                              <input type="submit" value="Search">
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+                  <!-- form end -->
+               </div>
             </div>
-          </div>
-        </div>
+         </div>
       </div>
-    </div>
-  </div>
-  <!-- End Container Start -->
-</div>
-<!-- Testimonial End -->
-<!-- Home Pages Elements End  -->
+   </div>
+   <!-- Choose From Most Popular Listin Start -->
+   <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 50px;margin-bottom: 0px;background: #ffffff;">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+               <div class="element-title align-center">
+                  <h2>Our Featured Recipes</h2>
+                  <p>Some of our best recipes developed by our best chefs.</p>
+               </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+               <div class="listing fancy">
+                  <ul class="row">
+                     {% for recipe in recipe_items%}
+                     <li class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <div class="list-post featured">
+                           <div class="img-holder">
+                              {% if recipe.image %}
+                              <figure><img src="{{recipe.image.url}}" class="img-thumb wp-post-image" alt=""></figure>
+                              {% else %}
+                              <figure><img src="{% static 'images/default-recipe.png' %}" class="img-thumb wp-post-image" alt=""></figure>
+                              {% endif %}
+                              <span class="restaurant-status open">
+                              <em class="bookmarkRibbon"></em>Top
+                              </span>
+                           </div>
+                           <div class="text-holder">
+                              <div class="post-title">
+                                 <h5>
+                                    <a href="{% url 'login' %}">{{recipe.recipe_title}}</a>
+                                    <span class="sponsored text-color">Sponsored</span>
+                                 </h5>
+                              </div>
+                              <address> <span>Type of category : </span> {{recipe.category}}</address>
+                              <div class="delivery-potions">
+                                 <div class="post-time">
+                                    <i class="icon-clock4"></i>
+                                    <div class="time-tooltip">
+                                       <div class="time-tooltip-holder"> <b class="tooltip-label">Preparation Time</b>
+                                          <b class="tooltip-info">{{recipe.formatted_preparation_time}}</b>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <span>Time</span>
+                              </div>
+                           </div>
+                           <div class="list-option">
+                              <a href="javascript:void(0);" class="shortlist-btn" data-toggle="modal" data-target="#sign-in">
+                              <i class="icon-heart-o"></i>
+                              </a>
+                           </div>
+                        </div>
+                     </li>
+                     {% endfor %}
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- Choose From Most Popular Listing End -->
+   <!-- Testimonial Start -->
+   <div class="page-section  nopadding cs-nomargin" style="margin-top: 0px; padding-top: 60px; padding-bottom: 0px; margin-bottom: 0px; background: #ffffff;">
+      <!-- Container Start -->
+      <div class="container ">
+         <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+               <div class="element-title">
+                  <h1 style="color:#000 !important; text-align:Center; font-style:normal;">
+                     Testimonials
+                  </h1>
+                  <p style="text-align:center;">What say about Us</p>
+               </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+               <div class="row">
+                  <div class="testimonial simple">
+                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="swiper-container">
+                           <div class="swiper-wrapper">
+                              <div class="swiper-slide">
+                                 <div class="testimonial-holder">
+                                    <div class="text-holder">
+                                       <p>This is the place where you learn how to
+                                          cook
+                                          some of the best recipes with a chef physically.
+                                       </p>
+                                    </div>
+                                    <div class="img-holder">
+                                       <figure>
+                                          <img src={%static "/extra-images/gender.png"%} alt="">
+                                       </figure>
+                                    </div>
+                                    <div class="author-detail">
+                                       <div class="auther-name"><span>@Christian Sandoval</span>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="swiper-slide">
+                                 <div class="testimonial-holder">
+                                    <div class="text-holder">
+                                       <p>Prominent calls-to-action include “as well as easy
+                                          access. to
+                                          social media accounts. This company made famous
+                                          for its
+                                          gourmet recipes makes it easy for customers to find an
+                                          inspiration for
+                                          cooking.
+                                       </p>
+                                    </div>
+                                    <div class="img-holder">
+                                       <figure>
+                                          <img src={%static "/extra-images/gender.png"%} alt="">
+                                       </figure>
+                                    </div>
+                                    <div class="author-detail">
+                                       <div class="auther-name"><span>@Sandoval Pro</span></div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- End Container Start -->
+   </div>
+   <!-- Testimonial End -->
+   <!-- Home Pages Elements End  -->
 </div>
 {% endblock %}

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -72,6 +73,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "efood_main.apps.accounts.context_processors.get_user_profile",
+                "efood_main.apps.accounts.context_processors.get_google_api",
             ],
         },
     },
@@ -153,3 +155,4 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "Chef's recipe  <tashi.cse@gmail.com>"
+GOOGLE_MAP_API = os.getenv("GOOGLE_MAP_API")

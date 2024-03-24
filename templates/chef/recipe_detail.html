@@ -1,90 +1,76 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 {% include 'includes/alerts.html' %}
-
 <!-- Main Section Start -->
 <div class="main-section">
-    
-    {% comment %} {% include 'includes/cover.html' %} {% endcomment %}
-    <div class="page-section account-header buyer-logged-in">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    <!-- Load the sidebar here -->
-                    {% include 'includes/chef_sidebar.html' %}
-                </div>
-                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                    <div class="user-dashboard loader-holder">
-                        <div class="user-holder">
-                           
-                            <div class="container">
-                                <div class="justify-content-center row">
-                                    <div class="col-md-12">
-                                        <div class="bg-white p-1">
-                                            <img src="{% static 'logo/base_logo.png' %}" alt="chefRecipe Logo" width="300">
-                                            <br><br>
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <h4 class="mt-2 mb-3">Recipe Title: {{recipe.recipe_title}}</h4>
-                                                </div>
-                                        
-                                            </div>
-                                            
-                                            <h6>Created By: {{ recipe.chef }} </h6><span>The recipe is described in detail below:
-                                                </span>
-                                            <hr>
-                            
-                                            <div class="d-flex justify-content-between">
-                                                <div>
-                                                    <span class="d-block">Create Date: </span><span class="font-weight-bold">{{ recipe.created_at }}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="d-block">Category: </span><span class="font-weight-bold">{{ recipe.category }}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="d-block">Preparation time: </span><span class="font-weight-bold">{{ recipe.formatted_preparation_time }}</span>
-                                                </div>
-                                                
-                                            </div>
-                                            <hr>
-                                            
-                                            <p><strong>Ingredients:</strong> {{ recipe.recipe_ingredients }}</p>
-                                            <p><strong>Instructions:</strong> {{ recipe.recipe_instructions }}</p>
-                                            {% if recipe.external_link %}
-                                            <p><i class="fa fa-link" aria-hidden="true"><a href="{{ recipe.external_link }}" target="_blank" > {{ recipe.external_link }}</i></a></p>
-                                            {% endif %}
-
-                                            {% if recipe.image %}
-                                            <img src="{{ recipe.image.url }}" alt="{{ recipe.recipe_title }}" width="200">
-                                            {% endif %}
-
-                                            
-                                            <hr>
-                                            <div class="d-flex justify-content-between">
-                                                <div>
-                                                    <span class="d-block font-weight-bold">Thank you for trusting our recipes!</span>
-                                                    <span>Chef's Recipe Team</span>
-                                                </div>
-                                                <div class="d-flex justify-content-end align-items-end">
-                                                    <span class="d-block font-weight-bold">Need help? </span>
-                                                    <span> Call - +33 0011223344</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
+   {% comment %} {% include 'includes/cover.html' %} {% endcomment %}
+   <div class="page-section account-header buyer-logged-in">
+      <div class="container">
+         <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+               <!-- Load the sidebar here -->
+               {% include 'includes/chef_sidebar.html' %}
             </div>
-        </div>
-    </div>
+            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+               <div class="user-dashboard loader-holder">
+                  <div class="user-holder">
+                     <div class="container">
+                        <div class="justify-content-center row">
+                           <div class="col-md-12">
+                              <div class="bg-white p-1">
+                                 <img src="{% static 'logo/base_logo.png' %}" alt="chefRecipe Logo" width="300">
+                                 <br><br>
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <h4 class="mt-2 mb-3">Recipe Title: {{recipe.recipe_title}}</h4>
+                                    </div>
+                                 </div>
+                                 <h6>Created By: {{ recipe.chef }} </h6>
+                                 <span>The recipe is described in detail below:
+                                 </span>
+                                 <hr>
+                                 <div class="d-flex justify-content-between">
+                                    <div>
+                                       <span class="d-block">Create Date: </span><span class="font-weight-bold">{{ recipe.created_at }}</span>
+                                    </div>
+                                    <div>
+                                       <span class="d-block">Category: </span><span class="font-weight-bold">{{ recipe.category }}</span>
+                                    </div>
+                                    <div>
+                                       <span class="d-block">Preparation time: </span><span class="font-weight-bold">{{ recipe.formatted_preparation_time }}</span>
+                                    </div>
+                                 </div>
+                                 <hr>
+                                 <p align="justify"><strong>Ingredients:</strong> {{ recipe.recipe_ingredients }}</p>
+                                 <p align="justify"><strong>Instructions:</strong> {{ recipe.recipe_instructions }}</p>
+                                 {% if recipe.external_link %}
+                                 <p align="justify"><i class="fa fa-link" aria-hidden="true"><a href="{{ recipe.external_link }}" target="_blank" > {{ recipe.external_link }}</i></a></p>
+                                 {% endif %}
+                                 {% if recipe.image %}
+                                 <img src="{{ recipe.image.url }}" alt="{{ recipe.recipe_title }}" width="200">
+                                 {% endif %}
+                                 <hr>
+                                 <div class="d-flex justify-content-between">
+                                    <div>
+                                       <span class="d-block font-weight-bold">Thank you for trusting our recipes!</span>
+                                       <span>Chef's Recipe Team</span>
+                                    </div>
+                                    <div class="d-flex justify-content-end align-items-end">
+                                       <span class="d-block font-weight-bold">Need help? </span>
+                                       <span> Call - 33 321 828 6662</span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
 <!-- Main Section End -->
-
-
 {% endblock %}

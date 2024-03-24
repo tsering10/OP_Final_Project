@@ -1,6 +1,7 @@
-from django.test import TestCase
-from efood_main.apps.accounts.models import User
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+
+from efood_main.apps.accounts.models import User
 
 
 class CustomUserTests(TestCase):
