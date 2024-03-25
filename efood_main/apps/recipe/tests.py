@@ -44,8 +44,6 @@ class RecipeItemModelTest(TestCase):
             email="chef@example.com",
             password="testpass",
         )
-        # user = User.objects.create_user("chefuser", "chef@example.com", "testpass")
-        # user_profile = UserProfile.objects.create(user=user)
         user_profile, _ = UserProfile.objects.get_or_create(user=user)
         chef = Chef.objects.create(
             user=user, user_profile=user_profile, chef_name="Chef Test"
@@ -59,7 +57,7 @@ class RecipeItemModelTest(TestCase):
             category=category,
             recipe_title="Quinoa Salad",
             slug="quinoa-salad",
-            recipe_ingredients="Quinoa, Tomatoes, Cucumber, Olive oil, Lemon juice",
+            recipe_ingredients="Quinoa, Tomatoes, Cucumber, Olive oil, Lemon",
             recipe_instructions="Mix all ingredients in a bowl. Serve chilled.",
             preparation_time=timedelta(minutes=30),
         )
