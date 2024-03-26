@@ -5,7 +5,7 @@ This application allows a chef to publish his own secret recipes and also enable
 ## 1. Requirements :
 
 * Python 3.x (you can install [python](https://www.python.org/downloads/))
-* Django  (you can install [Django](https://docs.djangoproject.com/en/3.2/topics/install/))
+* Django  (you can install [Django](https://docs.djangoproject.com/en/5.0/intro/install/))
 * **pip** package management system -
 * Using a virtual environment is highly recommended - Setup project environment with [virtualenv](https://virtualenv.pypa.io) and [pip](https://pip.pypa.io)
 * Dependencies in **requirements.txt** (use `pip install -r requirements.txt` to install them)
