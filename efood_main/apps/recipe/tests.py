@@ -33,6 +33,20 @@ class CategoryModelTest(TestCase):
         self.assertTrue(isinstance(category, Category))
         self.assertEqual(category.__str__(), "Vegan")
 
+    def test_category_name_capitalization(self):
+        # Create a category with a lowercase name
+        category = Category.objects.create(
+            chef=self.chef, category_name="vegan", slug="vegan"
+        )
+        # Call the clean method to capitalize the category name
+        category.clean()
+        # Check if the category name has been capitalized correctly
+        self.assertEqual(
+            category.category_name,
+            "Vegan",
+            "The category_name should have been capitalized",
+        )
+
 
 class RecipeItemModelTest(TestCase):
     def setUp(self):
