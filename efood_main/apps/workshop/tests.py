@@ -108,7 +108,7 @@ class WorkshopModelTest(TestCase):
         user_profile, created = UserProfile.objects.get_or_create(user=user)
 
         # Create a Chef instance, ensuring to link both User and UserProfile
-        Chef.objects.create(user=user, user_profile=user_profile, chef_name="Test Chef")
+        Chef.objects.create(user=user, user_profile=user_profile, chef_name="TestChef")
 
         chef = Chef.objects.get(user=user)
 

@@ -1,4 +1,5 @@
 from django.db import models
+
 from efood_main.apps.accounts.models import User, UserProfile
 
 
