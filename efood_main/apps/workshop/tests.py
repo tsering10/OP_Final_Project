@@ -21,10 +21,9 @@ class WorkshopItemFormTest(TestCase):
             username="chefjohn",
             email="chefjohn@example.com",
             password="testpass123",
+            is_active=True,
+            role=1,
         )
-        user.role = User.CHEF
-        user.is_active = True
-        user.save()
 
         # Create a user profile associated with the user
         user_profile, created = UserProfile.objects.get_or_create(user=user)
