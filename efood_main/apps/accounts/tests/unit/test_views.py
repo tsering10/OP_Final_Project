@@ -1,8 +1,10 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
-from efood_main.apps.accounts.models import User, UserProfile
+from efood_main.apps.accounts.models import User
 
 
 class TestRegisterUserView(TestCase):
@@ -70,3 +72,34 @@ class LoginViewTests(TestCase):
             status_code=302,
             target_status_code=200,
         )
+
+    def test_login_post_invalid_credentials(self):
+        url = reverse("login")
+        data = {
+            "email": "user@example.com",
+            "password": "wrongpassword",
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+
+
+class ActivateViewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="testuser",
+            first_name="john",
+            last_name="doe",
+            email="testuser@example.com",
+            password="test1234",
+            is_active=False,
+            role=1,
+        )
+
+    def test_activate_success(self):
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = default_token_generator.make_token(self.user)
+        url = reverse("activate", args=[uid, token])
+        response = self.client.get(url)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.is_active)
+        self.assertRedirects(response, reverse("login"))
