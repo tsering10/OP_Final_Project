@@ -1,6 +1,7 @@
 from datetime import date, time
 
 from django.contrib.messages import get_messages
+from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase
@@ -10,7 +11,7 @@ from efood_main.apps.accounts.forms import UserInfoForm, UserProfileForm
 from efood_main.apps.accounts.models import User, UserProfile
 from efood_main.apps.chef.models import Chef
 from efood_main.apps.customers.views import CustomerViewMixin
-from efood_main.apps.workshop.models import Workshop
+from efood_main.apps.workshop.models import Workshop, WorkshopRegistration
 
 
 class CustomerViewMixinTest(TestCase):
@@ -123,7 +124,6 @@ class CustomerWorkshopDetailViewTest(TestCase):
             first_name="Test",
             last_name="Chef",
         )
-
         # Create a user and profile
         self.customer = User.objects.create(
             username="testuser",
@@ -162,11 +162,23 @@ class CustomerWorkshopDetailViewTest(TestCase):
         self.assertContains(response, "Test Workshop")
         self.assertContains(response, "This is a test workshop.")
 
+    def tearDown(self):
+        UserProfile.objects.all().delete()  # Or more targeted cleanup
+        User.objects.all().delete()
+        Workshop.objects.all().delete()
+
 
 class CustomerWorkshopBookTest(TestCase):
     def setUp(self):
+        self.chef = User.objects.create_user(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+        )
         # Create a user and profile
-        self.user = User.objects.create(
+        self.customer = User.objects.create(
             username="testuser",
             first_name="henry",
             last_name="doe",
@@ -175,8 +187,24 @@ class CustomerWorkshopBookTest(TestCase):
             is_active=True,
             role=2,
         )
-        self.profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.client.force_login(self.user)
+        self.cust_profile, _ = UserProfile.objects.get_or_create(user=self.customer)
+        self.chef_profile, _ = UserProfile.objects.get_or_create(user=self.chef)
+        Chef.objects.create(
+            user=self.chef, user_profile=self.chef_profile, chef_name="TestChef"
+        )
+        chef = Chef.objects.get(user=self.chef)
+
+        self.workshop = Workshop.objects.create(
+            chef=chef,
+            title="Cooking 101",
+            description="This is a test workshop.",
+            date=date.today(),
+            time=time(14, 30),
+            capacity=1,
+            price=10.00,
+        )
+
+        self.client.force_login(self.customer)
 
     def test_customer_book_workshop(self):
         response = self.client.get(reverse("customer_workshop"))
@@ -187,3 +215,115 @@ class CustomerWorkshopBookTest(TestCase):
         response = self.client.get(reverse("workshop-confirmation"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "customers/booking-confirmation.html")
+
+    def test_successful_booking(self):
+        url = reverse("book-workshop", kwargs={"workshop_id": self.workshop.id})
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("workshop-confirmation"))
+        self.assertEqual(WorkshopRegistration.objects.count(), 1)
+        self.workshop.refresh_from_db()
+        self.assertEqual(self.workshop.capacity, 0)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Workshop Booking Confirmation")
+
+    def test_double_booking_prevention(self):
+        WorkshopRegistration.objects.create(
+            customer=self.customer, workshop=self.workshop
+        )
+        url = reverse("book-workshop", kwargs={"workshop_id": self.workshop.id})
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("customer_workshop"))
+        self.assertEqual(
+            WorkshopRegistration.objects.count(), 1
+        )  # No new registration should be created
+        messages = list(get_messages(response.wsgi_request))
+        self.assertIn(
+            "You have already booked a workshop.",
+            [message.message for message in messages],
+        )
+
+
+class CustomerWorkshopCancelViewTest(TestCase):
+    def setUp(self):
+        self.chef = User.objects.create_user(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+        )
+        # Create a user and profile
+        self.customer = User.objects.create(
+            username="testuser",
+            first_name="henry",
+            last_name="doe",
+            email="testuser@example.com",
+            password="test12345",
+            is_active=True,
+            role=2,
+        )
+        self.cust_profile, _ = UserProfile.objects.get_or_create(user=self.customer)
+        self.chef_profile, _ = UserProfile.objects.get_or_create(user=self.chef)
+        Chef.objects.create(
+            user=self.chef, user_profile=self.chef_profile, chef_name="TestChef"
+        )
+        chef = Chef.objects.get(user=self.chef)
+        self.workshop = Workshop.objects.create(
+            chef=chef,
+            title="Efood Workshop",
+            description="This is a test workshop.",
+            date=date.today(),
+            time=time(14, 30),
+            capacity=5,
+            price=100.00,
+        )
+        # Create a WorkshopRegistration instance for the user
+        self.registration = WorkshopRegistration.objects.create(
+            customer=self.customer,
+            workshop=self.workshop,
+        )
+
+        self.client.force_login(self.customer)
+
+    def test_cancel_workshop_registration_success(self):
+        # Assume the URL name for canceling a workshop registration is 'customer_workshop_cancel'
+        # and it takes a 'workshop_id' keyword argument
+        url = reverse("cancel_workshop", kwargs={"workshop_id": self.workshop.id})
+        response = self.client.post(url)
+
+        self.assertRedirects(response, reverse("customer_workshop"))
+        messages = list(get_messages(response.wsgi_request))
+        success_message = "Your registration has been cancelled successfully."
+        self.assertIn(success_message, [message.message for message in messages])
+        self.assertFalse(
+            WorkshopRegistration.objects.filter(
+                customer=self.customer, workshop=self.workshop
+            ).exists()
+        )
+        self.workshop.refresh_from_db()
+        self.assertEqual(self.workshop.capacity, 6)
+
+    def test_cancel_workshop_registration_not_registered(self):
+        # Delete the existing registration to simulate the user not being registered
+        self.registration.delete()
+
+        url = reverse("cancel_workshop", kwargs={"workshop_id": self.workshop.id})
+        response = self.client.post(url)
+
+        self.assertRedirects(response, reverse("customer_workshop"))
+
+        # Check messages for the warning
+        messages = list(get_messages(response.wsgi_request))
+        warning_message = "You do not have a registration for this workshop to cancel."
+        self.assertIn(warning_message, [message.message for message in messages])
+
+        # Ensure workshop capacity remains unchanged
+        self.workshop.refresh_from_db()
+        self.assertEqual(self.workshop.capacity, 5)
+
+    def tearDown(self):
+        # Explicitly delete objects created during tests
+        WorkshopRegistration.objects.all().delete()
+        Workshop.objects.all().delete()
+        UserProfile.objects.all().delete()
+        User.objects.all().delete()
