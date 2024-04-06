@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.text import slugify
 
 from efood_main.apps.accounts.models import User, UserProfile
 from efood_main.apps.chef.models import Chef
@@ -182,3 +183,45 @@ class ChefRecipeBuilderTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.category1, response.context["categories"])
         self.assertIn(self.category2, response.context["categories"])
+
+
+class AddCategoryViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+            role=1,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.chef = Chef.objects.create(
+            user=self.user,
+            user_profile=self.user_profile,
+            chef_name="Test Chef",
+            chef_license=SimpleUploadedFile(
+                name="test_license.jpg", content=b"", content_type="image/jpeg"
+            ),
+            is_approved=True,
+        )
+        self.client.force_login(self.user)
+
+    def test_add_category(self):
+        # The URL name 'add_category' needs to match your project's URL configuration
+        url = reverse("add_category")
+        category_name = "New Category"
+        data = {
+            "category_name": category_name,
+            "description": "A new category description.",
+        }
+
+        response = self.client.post(url, data)
+        self.assertRedirects(
+            response, reverse("recipe_builder"), status_code=302, target_status_code=200
+        )
+        category = Category.objects.first()
+        self.assertIsNotNone(category)
+        self.assertEqual(category.slug, slugify(category_name))
+
