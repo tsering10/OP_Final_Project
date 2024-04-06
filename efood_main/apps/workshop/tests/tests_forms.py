@@ -24,7 +24,7 @@ class WorkshopItemFormTest(TestCase):
         )
 
         # Create a user profile associated with the user
-        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user_profile, _ = UserProfile.objects.get_or_create(user=user)
 
         # Create the chef instance
         cls.chef = Chef.objects.create(
