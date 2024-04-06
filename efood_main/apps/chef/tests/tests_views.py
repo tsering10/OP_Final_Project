@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.messages import get_messages
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
@@ -225,3 +226,195 @@ class AddCategoryViewTest(TestCase):
         self.assertIsNotNone(category)
         self.assertEqual(category.slug, slugify(category_name))
 
+
+class EditCategoryViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+            role=1,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.chef = Chef.objects.create(
+            user=self.user,
+            user_profile=self.user_profile,
+            chef_name="Test Chef",
+            chef_license=SimpleUploadedFile(
+                name="test_license.jpg", content=b"", content_type="image/jpeg"
+            ),
+            is_approved=True,
+        )
+        self.category = Category.objects.create(
+            chef=self.chef, category_name="Original Category", slug="original-category"
+        )
+
+        self.client.force_login(self.user)
+
+    def test_edit_category(self):
+        # The URL name 'edit_category' and 'recipe_builder' need to match your project's URL configuration
+        url = reverse("edit_category", kwargs={"pk": self.category.pk})
+        updated_name = "Updated Category"
+        data = {
+            "category_name": updated_name,
+            "description": "Updated category description.",
+        }
+
+        response = self.client.post(url, data)
+
+        # Verify redirect to success_url
+        self.assertRedirects(
+            response, reverse("recipe_builder"), status_code=302, target_status_code=200
+        )
+
+        # Fetch the updated category
+        self.category.refresh_from_db()
+
+        # Verify the category was updated correctly
+        self.assertEqual(self.category.category_name, updated_name.capitalize())
+        self.assertEqual(self.category.slug, slugify(updated_name))
+        # Verify the success message
+        messages = [msg for msg in response.wsgi_request._messages]
+
+        self.assertTrue(
+            any(msg.message == "Category updated successfully!" for msg in messages)
+        )
+
+
+class AddRecipeViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+            role=1,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.chef = Chef.objects.create(
+            user=self.user,
+            user_profile=self.user_profile,
+            chef_name="Test Chef",
+            chef_license=SimpleUploadedFile(
+                name="test_license.jpg", content=b"", content_type="image/jpeg"
+            ),
+            is_approved=True,
+        )
+        self.category = Category.objects.create(
+            chef=self.chef, category_name="Test Category", slug="test-category"
+        )
+
+        self.client.force_login(self.user)
+
+    def test_add_recipe(self):
+        # Prepare data for a new recipe item
+        recipe_title = "Delicious Test Recipe"
+        mock_image_file = SimpleUploadedFile(
+            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
+        )
+        data = {
+            "recipe_title": recipe_title,
+            "category": self.category.id,
+            "recipe_ingredients": "Ingredient 1, Ingredient 2",
+            "recipe_instructions": "Step 1, Step 2",
+            "preparation_time": timedelta(minutes=30),
+            "image": mock_image_file,
+        }
+
+        url = reverse("add_recipe")
+
+        response = self.client.post(url, data)
+        self.assertRedirects(
+            response,
+            reverse("recipeitems_by_category", args=(self.category.id,)),
+            status_code=302,
+        )
+        # Fetch the added recipe item
+        recipe_item = RecipeItem.objects.first()
+        self.assertIsNotNone(recipe_item)
+        self.assertEqual(recipe_item.slug, slugify(recipe_title))
+        self.assertEqual(
+            response.status_code,
+            302,
+            "The form submission did not redirect as expected.",
+        )
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any(
+                message.message == "Recipe Item added successfully!"
+                for message in messages
+            ),
+            "Success message was not found in messages.",
+        )
+
+
+class EditRecipeViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+            role=1,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.chef = Chef.objects.create(
+            user=self.user,
+            user_profile=self.user_profile,
+            chef_name="Test Chef",
+            chef_license=SimpleUploadedFile(
+                name="test_license.jpg", content=b"", content_type="image/jpeg"
+            ),
+            is_approved=True,
+        )
+        self.category = Category.objects.create(
+            chef=self.chef, category_name="Test Category", slug="test-category"
+        )
+
+        self.mock_image_file = SimpleUploadedFile(
+            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
+        )
+
+        self.recipe_item = RecipeItem.objects.create(
+            chef=self.chef,
+            category=self.category,
+            recipe_title="Item 2",
+            slug="item-2",
+            recipe_ingredients="Ingredients 2",
+            recipe_instructions="Instructions 2",
+            preparation_time=timedelta(minutes=20),
+            image=self.mock_image_file,
+            # image and external_link are optional, include if needed
+        )
+
+        self.client.force_login(self.user)
+
+    def test_edit_recipe(self):
+        url = reverse("edit_recipe", kwargs={"pk": self.recipe_item.pk})
+        updated_data = {
+            "recipe_title": "Updated Recipe Title",
+            "recipe_ingredients": "Updated Ingredients",
+            "recipe_instructions": "Updated Instructions",
+            "preparation_time": "00:45:00",
+            "category": self.category.id,
+        }
+        # Perform the POST request to update the recipe
+        response = self.client.post(url, updated_data)
+        self.assertRedirects(
+            response,
+            reverse("recipeitems_by_category", args=[self.category.id]),
+            status_code=302,
+        )
+
+        # Fetch the updated recipe item
+        self.recipe_item.refresh_from_db()
+        # Verify the recipe item was updated correctly
+        self.assertEqual(self.recipe_item.recipe_title, updated_data["recipe_title"])
+        self.assertEqual(self.recipe_item.slug, slugify(updated_data["recipe_title"]))
