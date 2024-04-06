@@ -242,6 +242,16 @@ class CustomerWorkshopBookTest(TestCase):
             [message.message for message in messages],
         )
 
+    def test_booking_when_full(self):
+        self.workshop.capacity = 0
+        self.workshop.save()
+        url = reverse("book-workshop", kwargs={"workshop_id": self.workshop.id})
+        response = self.client.post(url)
+        self.assertRedirects(response, reverse("customer_workshop"))
+        self.assertEqual(
+            WorkshopRegistration.objects.count(), 0
+        )  # No registration should be created
+
 
 class CustomerWorkshopCancelViewTest(TestCase):
     def setUp(self):
@@ -265,7 +275,7 @@ class CustomerWorkshopCancelViewTest(TestCase):
         self.cust_profile, _ = UserProfile.objects.get_or_create(user=self.customer)
         self.chef_profile, _ = UserProfile.objects.get_or_create(user=self.chef)
         Chef.objects.create(
-            user=self.chef, user_profile=self.chef_profile, chef_name="TestChef"
+            user=self.chef, user_profile=self.chef_profile, chef_name="Test Chef"
         )
         chef = Chef.objects.get(user=self.chef)
         self.workshop = Workshop.objects.create(

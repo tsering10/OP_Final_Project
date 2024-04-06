@@ -2,15 +2,14 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
 from efood_main.apps.accounts.models import User, UserProfile
-
-from .models import Chef
+from efood_main.apps.chef.models import Chef
 
 
 class ChefModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Create a custom user for the chef
-        user, created = User.objects.get_or_create(
+        user, _ = User.objects.get_or_create(
             first_name="John",
             last_name="Doe",
             username="chefjohn",
@@ -22,7 +21,7 @@ class ChefModelTest(TestCase):
         user.save()
 
         # Create a user profile associated with the user
-        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        user_profile, _ = UserProfile.objects.get_or_create(user=user)
 
         # Create the chef instance
         cls.chef = Chef.objects.create(

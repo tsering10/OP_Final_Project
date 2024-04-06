@@ -19,19 +19,25 @@ from .forms import ChefForm
 from .models import Chef
 
 
+class ChefViewMixin(LoginRequiredMixin, UserPassesTestMixin):
+    def test_func(self):
+        try:
+            self.chef = self.request.user.chef
+            return self.chef
+        except ObjectDoesNotExist:
+            return False
+
+
 class ChefProfileView(LoginRequiredMixin, TemplateView):
     template_name = "chef/chef_profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         # Fetch UserProfile and Chef objects or return a 404 response
         profile = get_object_or_404(UserProfile, user=self.request.user)
         chef = get_object_or_404(Chef, user=self.request.user)
-
         # Create a combined form with both UserProfileForm and ChefForm
         combined_form = self.get_combined_form(profile, chef)
-
         context["combined_form"] = combined_form
         context["profile"] = profile
         context["chef"] = chef
@@ -41,7 +47,6 @@ class ChefProfileView(LoginRequiredMixin, TemplateView):
         # Initialize UserProfileForm and ChefForm with instances
         profile_form = UserProfileForm(instance=profile)
         chef_form = ChefForm(instance=chef)
-
         # Combine both forms into a single form
         combined_form = {
             "profile_form": profile_form,
@@ -69,15 +74,6 @@ class ChefProfileView(LoginRequiredMixin, TemplateView):
 
         if profile_form.is_valid():
             return self.form_valid(combined_form)
-
-
-class ChefViewMixin(LoginRequiredMixin, UserPassesTestMixin):
-    def test_func(self):
-        try:
-            self.chef = self.request.user.chef
-            return self.chef
-        except ObjectDoesNotExist:
-            return False
 
 
 class ChefRecipeBuilder(ChefViewMixin, TemplateView):
