@@ -2,8 +2,6 @@ from datetime import timedelta
 
 from django.contrib.messages import get_messages
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import Http404
-from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.text import slugify
@@ -13,7 +11,7 @@ from efood_main.apps.chef.models import Chef
 from efood_main.apps.recipe.models import Category, RecipeItem
 
 
-class ChefProfileViewTest(TestCase):
+class BaseTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(
             username="chefuser",
@@ -34,7 +32,14 @@ class ChefProfileViewTest(TestCase):
             ),
             is_approved=True,
         )
+        self.mock_image_file = SimpleUploadedFile(
+            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
+        )
         self.client.force_login(self.user)
+
+
+class ChefProfileViewTest(BaseTest):
+    # No need to redefine setUp() here if it doesn't add anything new
 
     def test_chef_profile_view_get(self):
         response = self.client.get(reverse("chef_profile"))
@@ -76,31 +81,9 @@ class ChefProfileViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
-class RecipeItemsByCategoryViewTest(TestCase):
+class RecipeItemsByCategoryViewTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
-        self.mock_image_file = SimpleUploadedFile(
-            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
-        )
-
+        super().setUp()
         self.category1 = Category.objects.create(
             chef=self.chef, category_name="Category 1", slug="category-1"
         )
@@ -131,7 +114,6 @@ class RecipeItemsByCategoryViewTest(TestCase):
             image=self.mock_image_file,
             # image and external_link are optional, include if needed
         )
-        self.client.force_login(self.user)
 
     def test_recipe_items_by_category_view(self):
         # Simulate a GET request to the view for category1
@@ -146,31 +128,9 @@ class RecipeItemsByCategoryViewTest(TestCase):
         self.assertEqual(response.context["category"], self.category1)
 
 
-class ChefRecipeBuilderTest(TestCase):
+class ChefRecipeBuilderTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
-        self.mock_image_file = SimpleUploadedFile(
-            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
-        )
-
+        super().setUp()
         self.category1 = Category.objects.create(
             chef=self.chef, category_name="Category 1", slug="category-1"
         )
@@ -179,8 +139,6 @@ class ChefRecipeBuilderTest(TestCase):
             chef=self.chef, category_name="Category 2", slug="category-2"
         )
 
-        self.client.force_login(self.user)
-
     def test_chef_recipe_builder_view(self):
         response = self.client.get(reverse("recipe_builder"))
         self.assertEqual(response.status_code, 200)
@@ -188,28 +146,9 @@ class ChefRecipeBuilderTest(TestCase):
         self.assertIn(self.category2, response.context["categories"])
 
 
-class AddCategoryViewTest(TestCase):
+class AddCategoryViewTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
-        self.client.force_login(self.user)
+        super().setUp()
 
     def test_add_category(self):
         # The URL name 'add_category' needs to match your project's URL configuration
@@ -229,32 +168,12 @@ class AddCategoryViewTest(TestCase):
         self.assertEqual(category.slug, slugify(category_name))
 
 
-class EditCategoryViewTest(TestCase):
+class EditCategoryViewTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
+        super().setUp()
         self.category = Category.objects.create(
             chef=self.chef, category_name="Original Category", slug="original-category"
         )
-
-        self.client.force_login(self.user)
 
     def test_edit_category(self):
         # The URL name 'edit_category' and 'recipe_builder' need to match your project's URL configuration
@@ -286,32 +205,12 @@ class EditCategoryViewTest(TestCase):
         )
 
 
-class AddRecipeViewTest(TestCase):
+class AddRecipeViewTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
+        super().setUp()
         self.category = Category.objects.create(
             chef=self.chef, category_name="Test Category", slug="test-category"
         )
-
-        self.client.force_login(self.user)
 
     def test_add_recipe(self):
         # Prepare data for a new recipe item
@@ -355,33 +254,12 @@ class AddRecipeViewTest(TestCase):
         )
 
 
-class EditRecipeViewTest(TestCase):
+class EditRecipeViewTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
+        super().setUp()
+
         self.category = Category.objects.create(
             chef=self.chef, category_name="Test Category", slug="test-category"
-        )
-
-        self.mock_image_file = SimpleUploadedFile(
-            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
         )
 
         self.recipe_item = RecipeItem.objects.create(
@@ -395,8 +273,6 @@ class EditRecipeViewTest(TestCase):
             image=self.mock_image_file,
             # image and external_link are optional, include if needed
         )
-
-        self.client.force_login(self.user)
 
     def test_edit_recipe(self):
         url = reverse("edit_recipe", kwargs={"pk": self.recipe_item.pk})
@@ -422,35 +298,12 @@ class EditRecipeViewTest(TestCase):
         self.assertEqual(self.recipe_item.slug, slugify(updated_data["recipe_title"]))
 
 
-class RecipeDetailViewTest(TestCase):
+class RecipeDetailViewTest(BaseTest):
     def setUp(self):
-        self.user = User.objects.create(
-            username="chefuser",
-            email="chef@example.com",
-            password="chefpassword",
-            first_name="Test",
-            last_name="Chef",
-            role=1,
-            is_active=True,
-        )
-        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
-        self.chef = Chef.objects.create(
-            user=self.user,
-            user_profile=self.user_profile,
-            chef_name="Test Chef",
-            chef_license=SimpleUploadedFile(
-                name="test_license.jpg", content=b"", content_type="image/jpeg"
-            ),
-            is_approved=True,
-        )
+        super().setUp()
         self.category = Category.objects.create(
             chef=self.chef, category_name="Test Category", slug="test-category"
         )
-
-        self.mock_image_file = SimpleUploadedFile(
-            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
-        )
-
         self.recipe = RecipeItem.objects.create(
             chef=self.chef,
             category=self.category,
@@ -460,10 +313,7 @@ class RecipeDetailViewTest(TestCase):
             recipe_instructions="Instructions 2",
             preparation_time=timedelta(minutes=20),
             image=self.mock_image_file,
-            # image and external_link are optional, include if needed
         )
-
-        self.client.force_login(self.user)
 
     def test_recipe_detail_view_with_valid_recipe(self):
         response = self.client.get(
