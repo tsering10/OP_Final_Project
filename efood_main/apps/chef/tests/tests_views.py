@@ -39,7 +39,6 @@ class BaseTest(TestCase):
 
 
 class ChefProfileViewTest(BaseTest):
-    # No need to redefine setUp() here if it doesn't add anything new
 
     def test_chef_profile_view_get(self):
         response = self.client.get(reverse("chef_profile"))
