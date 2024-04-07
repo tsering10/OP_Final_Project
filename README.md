@@ -40,3 +40,43 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = ‘your_account@gmail.com’
 EMAIL_HOST_PASSWORD = ‘your password’
 ```
+
+## 4. Getting Started
+
+1. Setup project environment with [virtualenv](https://virtualenv.pypa.io) and [pip](https://pip.pypa.io).
+2. you can clone or fork the git repo
+
+```bash
+$ virtualenv {your virtual env name}
+$ source {your virtual env name}/bin/activate
+$ pip install -r requirements.txt
+$ cd projectname/
+$ python manage.py migrate
+$ python manage.py runserver
+
+```
+Then go to localhost:8000 or 127.0.0.1:8000, and the app should be launched and usable there.
+
+## 5. Tests
+
+To run the tests, cd into the directory where manage.py is:
+
+```bash
+$ ./manage.py test
+
+```
+If you want to know the test coverage:
+
+
+```bash
+$ coverage run ./manage.py test
+
+```
+To get test report and generate report in html file:
+
+
+```bash
+$ coverage report -m
+
+$ coverage html
+```
