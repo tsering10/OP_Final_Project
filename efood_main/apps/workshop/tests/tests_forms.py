@@ -13,7 +13,7 @@ class WorkshopItemFormTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Create a custom user for the chef
-        user, created = User.objects.get_or_create(
+        user, _ = User.objects.get_or_create(
             first_name="John",
             last_name="Doe",
             username="chefjohn",

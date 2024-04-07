@@ -7,24 +7,46 @@ from efood_main.apps.chef.models import Chef
 from efood_main.apps.recipe.models import Category, RecipeItem
 
 
-# Create your tests here.
-class CategoryModelTest(TestCase):
+class BaseTest(TestCase):
     def setUp(self):
-        # Create a user and a chef as prerequisites for a category
-        user, _ = User.objects.get_or_create(
+        # Create a user
+        self.user, _ = User.objects.get_or_create(
             first_name="John",
             last_name="Doe",
-            username="chefjohn",
-            email="chefjohn@example.com",
+            username="testuser",
+            email="user@example.com",
             password="testpass123",
         )
-        user_profile, _ = UserProfile.objects.get_or_create(user=user)
+        # Create a user profile
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        # Create a chef
         self.chef = Chef.objects.create(
-            user=user, user_profile=user_profile, chef_name="Chef John"
+            user=self.user, user_profile=self.user_profile, chef_name="Chef Test"
         )
 
-        # Create a category
-        Category.objects.create(chef=self.chef, category_name="Vegan", slug="vegan")
+    def create_category(self, chef, category_name, slug):
+        return Category.objects.create(
+            chef=chef, category_name=category_name, slug=slug
+        )
+
+    def create_recipe_item(
+        self, chef, category, title, slug, ingredients, instructions, prep_time
+    ):
+        return RecipeItem.objects.create(
+            chef=chef,
+            category=category,
+            recipe_title=title,
+            slug=slug,
+            recipe_ingredients=ingredients,
+            recipe_instructions=instructions,
+            preparation_time=prep_time,
+        )
+
+
+class CategoryModelTest(BaseTest):
+    def setUp(self):
+        super().setUp()
+        self.category = self.create_category(self.chef, "Vegan", "vegan")
 
     def test_category_creation(self):
         category = Category.objects.get(slug="vegan")
@@ -32,50 +54,33 @@ class CategoryModelTest(TestCase):
         self.assertEqual(category.__str__(), "Vegan")
 
     def test_category_name_capitalization(self):
-        # Create a category with a lowercase name
-        category = Category.objects.create(
-            chef=self.chef, category_name="vegan", slug="vegan"
-        )
-        # Call the clean method to capitalize the category name
-        category.clean()
         # Check if the category name has been capitalized correctly
+        self.category.category_name = "vegan"  # Simulate lowercase input
+        self.category.clean()  # Call the clean method to capitalize
         self.assertEqual(
-            category.category_name,
+            self.category.category_name,
             "Vegan",
             "The category_name should have been capitalized",
         )
 
 
-class RecipeItemModelTest(TestCase):
+class RecipeItemModelTest(BaseTest):
     def setUp(self):
-        # Create necessary objects: User, Chef, Category
-        user, _ = User.objects.get_or_create(
-            first_name="John",
-            last_name="Doe",
-            username="chefuser",
-            email="chef@example.com",
-            password="testpass",
-        )
-        user_profile, _ = UserProfile.objects.get_or_create(user=user)
-        chef = Chef.objects.create(
-            user=user, user_profile=user_profile, chef_name="Chef Test"
-        )
-        category = Category.objects.create(
-            chef=chef, category_name="Vegetarian", slug="vegetarian"
-        )
-        # Create a RecipeItem
-        RecipeItem.objects.create(
-            chef=chef,
+        super().setUp()
+        category = self.create_category(self.chef, "Vegetarian", "vegetarian")
+        self.recipe_item = self.create_recipe_item(
+            chef=self.chef,
             category=category,
-            recipe_title="Quinoa Salad",
+            title="Quinoa Salad",
             slug="quinoa-salad",
-            recipe_ingredients="Quinoa, Tomatoes, Cucumber, Olive oil, Lemon",
-            recipe_instructions="Mix ingredients in a bowl. Serve chilled.",
-            preparation_time=timedelta(minutes=30),
+            ingredients="Quinoa, Tomatoes, Cucumber, Olive oil, Lemon",
+            instructions="Mix ingredients in a bowl. Serve chilled.",
+            prep_time=timedelta(minutes=30),
         )
 
     def test_recipe_item_creation(self):
-        recipe_item = RecipeItem.objects.get(slug="quinoa-salad")
-        self.assertTrue(isinstance(recipe_item, RecipeItem))
-        self.assertEqual(recipe_item.__str__(), "Quinoa Salad")
-        self.assertEqual(recipe_item.formatted_preparation_time, "00 hr:30 min:00 sec")
+        self.assertTrue(isinstance(self.recipe_item, RecipeItem))
+        self.assertEqual(self.recipe_item.__str__(), "Quinoa Salad")
+        self.assertEqual(
+            self.recipe_item.formatted_preparation_time, "00 hr:30 min:00 sec"
+        )
