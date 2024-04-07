@@ -96,7 +96,6 @@ class RegisterChefView(CreateView):
                 "Your account has been registered sucessfully!\
                       Please wait for the approval.",
             )
-            # return redirect("registerVendor")
             return redirect("register-activation")
 
         messages.error(self.request, "Invalid chef form")
