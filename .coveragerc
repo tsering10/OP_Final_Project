@@ -5,4 +5,8 @@ omit =
     */admin/*
     */tests_*
     */manage.py
+    *urls.py*
     *__init__*
+
+
+

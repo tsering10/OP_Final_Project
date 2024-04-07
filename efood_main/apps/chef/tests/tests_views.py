@@ -2,6 +2,8 @@ from datetime import timedelta
 
 from django.contrib.messages import get_messages
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.text import slugify
@@ -418,3 +420,57 @@ class EditRecipeViewTest(TestCase):
         # Verify the recipe item was updated correctly
         self.assertEqual(self.recipe_item.recipe_title, updated_data["recipe_title"])
         self.assertEqual(self.recipe_item.slug, slugify(updated_data["recipe_title"]))
+
+
+class RecipeDetailViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="chefuser",
+            email="chef@example.com",
+            password="chefpassword",
+            first_name="Test",
+            last_name="Chef",
+            role=1,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.chef = Chef.objects.create(
+            user=self.user,
+            user_profile=self.user_profile,
+            chef_name="Test Chef",
+            chef_license=SimpleUploadedFile(
+                name="test_license.jpg", content=b"", content_type="image/jpeg"
+            ),
+            is_approved=True,
+        )
+        self.category = Category.objects.create(
+            chef=self.chef, category_name="Test Category", slug="test-category"
+        )
+
+        self.mock_image_file = SimpleUploadedFile(
+            name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
+        )
+
+        self.recipe = RecipeItem.objects.create(
+            chef=self.chef,
+            category=self.category,
+            recipe_title="Item 2",
+            slug="item-2",
+            recipe_ingredients="Ingredients 2",
+            recipe_instructions="Instructions 2",
+            preparation_time=timedelta(minutes=20),
+            image=self.mock_image_file,
+            # image and external_link are optional, include if needed
+        )
+
+        self.client.force_login(self.user)
+
+    def test_recipe_detail_view_with_valid_recipe(self):
+        response = self.client.get(
+            reverse(
+                "recipe_detail", kwargs={"slug": self.recipe.slug, "id": self.recipe.id}
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "chef/recipe_detail.html")
+        self.assertEqual(response.context["recipe"], self.recipe)

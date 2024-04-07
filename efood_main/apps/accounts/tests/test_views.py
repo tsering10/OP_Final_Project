@@ -1,12 +1,11 @@
 from django.contrib.auth.tokens import default_token_generator
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.messages import get_messages
 from django.test import Client, TestCase
 from django.urls import reverse
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 
 from efood_main.apps.accounts.models import User, UserProfile
-from efood_main.apps.chef.models import Chef
 
 
 class TestRegisterUserView(TestCase):
@@ -85,6 +84,37 @@ class LoginViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
 
+class LogoutViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="customeruser",
+            email="customer@example.com",
+            password="customerpassword",
+            first_name="Test",
+            last_name="customer",
+            role=2,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.client.force_login(self.user)
+
+    def test_logout(self):
+        # Perform a GET request to the logout view
+        response = self.client.get(reverse("logout"))
+
+        # After logout, the user should be an AnonymousUser
+        self.assertTrue(
+            response.wsgi_request.user.is_anonymous, "User is not logged out."
+        )
+        self.assertRedirects(response, reverse("home"), status_code=302)
+        # Verify the logout message
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any(message.message == "You are logged out." for message in messages),
+            "Logout message was not found.",
+        )
+
+
 class ActivateViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create(
@@ -110,6 +140,66 @@ class ActivateViewTests(TestCase):
         url = reverse("activate", args=["bad-uid", "bad-token"])
         response = self.client.get(url)
         self.assertRedirects(response, reverse("login"), fetch_redirect_response=False)
+
+
+class ForgotPasswordViewTest(TestCase):
+    def setUp(self):
+        self.forgot_password_url = reverse("forgot_password")
+        self.login_url = reverse("login")
+        self.user = User.objects.create(
+            username="customeruser",
+            email="customer@example.com",
+            password="customerpassword",
+            first_name="Test",
+            last_name="customer",
+            role=2,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+
+    def test_get_forgot_password_page(self):
+        response = self.client.get(self.forgot_password_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/forgot_password.html")
+
+
+class ResetPasswordValidateViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(
+            username="customeruser",
+            email="customer@example.com",
+            password="customerpassword",
+            first_name="Test",
+            last_name="customer",
+            role=2,
+            is_active=True,
+        )
+        self.user_profile, _ = UserProfile.objects.get_or_create(user=self.user)
+        self.uid = urlsafe_base64_encode(force_str(self.user.pk).encode())
+        self.token = default_token_generator.make_token(self.user)
+        self.valid_url = reverse(
+            "reset_password_validate", kwargs={"uidb64": self.uid, "token": self.token}
+        )
+        self.invalid_url = reverse(
+            "reset_password_validate", kwargs={"uidb64": "MjM", "token": "abcd-efgh"}
+        )
+
+    def test_valid_uid_token(self):
+        response = self.client.get(self.valid_url)
+        self.assertRedirects(response, reverse("reset_password"))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any(msg.message == "Please reset your password" for msg in messages)
+        )
+        self.assertEqual(self.client.session["uid"], force_str(self.user.pk))
+
+    def test_invalid_uid_token(self):
+        response = self.client.get(self.invalid_url)
+        self.assertRedirects(response, reverse("forgot_password"))
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(
+            any(msg.message == "This link has been expired!" for msg in messages)
+        )
 
 
 class RegisterUserViewTestCase(TestCase):
@@ -184,3 +274,65 @@ class CustDashboardViewTestCase(TestCase):
         response = self.client.get(reverse("customerDashboard"))
         self.assertTrue("workshops" in response.context)
         self.assertEqual(response.status_code, 200)
+
+
+# class ChefDashboardViewTest(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create(
+#             username="chefuser",
+#             email="chef@example.com",
+#             password="chefpassword",
+#             first_name="Test",
+#             last_name="Chef",
+#             role=1,
+#             is_active=True,
+#         )
+
+#         self.client.force_login(self.user)
+#         # Check if a UserProfile already exists for the user
+#         try:
+#             self.user_profile = self.user.userprofile
+#         except UserProfile.DoesNotExist:
+#             # Create a mock profile picture for the user
+#             file_content = b"mock_profile_picture_content"
+#             uploaded_file = SimpleUploadedFile(
+#                 "profile_picture.jpg", file_content, content_type="image/jpeg"
+#             )
+#             self.user_profile = UserProfile.objects.create(
+#                 user=self.user, profile_picture=uploaded_file
+#             )
+
+#         self.chef = Chef.objects.create(
+#             user=self.user,
+#             user_profile=self.user_profile,
+#             chef_name="Test Chef",
+#             chef_license=SimpleUploadedFile(
+#                 name="test_license.jpg", content=b"", content_type="image/jpeg"
+#             ),
+#             is_approved=True,
+#         )
+
+#     def test_get_context_data(self):
+#         self.mock_image_file = SimpleUploadedFile(
+#             name="test_image.jpg", content=b"test image data", content_type="image/jpeg"
+#         )
+
+#         self.category1 = Category.objects.create(
+#             chef=self.chef, category_name="Category 1", slug="category-1"
+#         )
+
+#         self.recipe_item1 = RecipeItem.objects.create(
+#             chef=self.chef,
+#             category=self.category1,
+#             recipe_title="Item 1",
+#             slug="item-1",
+#             recipe_ingredients="Ingredients 1",
+#             recipe_instructions="Instructions 1",
+#             preparation_time=timedelta(minutes=10),
+#             image=self.mock_image_file,
+#         )
+
+#         url = reverse("chefDashboard")
+#         response = self.client.get(url)
+
+#         self.assertEqual(response.status_code, 200)
