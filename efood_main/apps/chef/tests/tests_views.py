@@ -78,6 +78,8 @@ class ChefProfileViewTest(BaseTest):
         }
         response = self.client.post(reverse("chef_profile"), data=valid_data)
         self.assertEqual(response.status_code, 302)
+        messages = list(get_messages(response.wsgi_request))
+        self.assertIn("Profile updated.", [message.message for message in messages])
 
 
 class RecipeItemsByCategoryViewTest(BaseTest):
@@ -175,7 +177,6 @@ class EditCategoryViewTest(BaseTest):
         )
 
     def test_edit_category(self):
-        # The URL name 'edit_category' and 'recipe_builder' need to match your project's URL configuration
         url = reverse("edit_category", kwargs={"pk": self.category.pk})
         updated_name = "Updated Category"
         data = {
@@ -190,13 +191,9 @@ class EditCategoryViewTest(BaseTest):
             response, reverse("recipe_builder"), status_code=302, target_status_code=200
         )
 
-        # Fetch the updated category
         self.category.refresh_from_db()
-
-        # Verify the category was updated correctly
         self.assertEqual(self.category.category_name, updated_name.capitalize())
         self.assertEqual(self.category.slug, slugify(updated_name))
-        # Verify the success message
         messages = [msg for msg in response.wsgi_request._messages]
 
         self.assertTrue(
@@ -270,7 +267,6 @@ class EditRecipeViewTest(BaseTest):
             recipe_instructions="Instructions 2",
             preparation_time=timedelta(minutes=20),
             image=self.mock_image_file,
-            # image and external_link are optional, include if needed
         )
 
     def test_edit_recipe(self):
@@ -292,7 +288,6 @@ class EditRecipeViewTest(BaseTest):
 
         # Fetch the updated recipe item
         self.recipe_item.refresh_from_db()
-        # Verify the recipe item was updated correctly
         self.assertEqual(self.recipe_item.recipe_title, updated_data["recipe_title"])
         self.assertEqual(self.recipe_item.slug, slugify(updated_data["recipe_title"]))
 

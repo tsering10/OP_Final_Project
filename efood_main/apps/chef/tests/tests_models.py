@@ -8,7 +8,6 @@ from efood_main.apps.chef.models import Chef
 class ChefModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Create a custom user for the chef
         user, _ = User.objects.get_or_create(
             first_name="John",
             last_name="Doe",
@@ -20,7 +19,6 @@ class ChefModelTest(TestCase):
         user.is_active = True
         user.save()
 
-        # Create a user profile associated with the user
         user_profile, _ = UserProfile.objects.get_or_create(user=user)
 
         # Create the chef instance
@@ -32,10 +30,8 @@ class ChefModelTest(TestCase):
                 "license.jpg", b"license file content", content_type="image/jpeg"
             ),
             is_approved=True,
-            # Fill in other required fields as needed
         )
 
     def test_chef_creation(self):
-        # Validate the Chef instance.
         self.assertTrue(isinstance(self.chef, Chef))
         self.assertEqual(self.chef.chef_name, "Chef John")

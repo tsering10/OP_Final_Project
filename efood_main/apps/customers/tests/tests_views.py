@@ -29,7 +29,6 @@ class CustomerViewMixinTest(TestCase):
         self.client.force_login(self.user)
 
     def test_customer_user(self):
-        # Attach the is_customer attribute to simulate a customer
         self.user.role = User.CUSTOMER
         self.user.save()
         request = HttpRequest()
@@ -39,14 +38,12 @@ class CustomerViewMixinTest(TestCase):
         self.assertTrue(mixin.test_func(), "test_func should return True for customers")
 
     def test_non_customer_user(self):
-        # Set the user's role to CHEF
         self.user.role = User.CHEF
         self.user.save()
         request = HttpRequest()
         request.user = self.user
         mixin = CustomerViewMixin()
         mixin.request = request
-        # Test the non-customer case
         self.assertFalse(
             mixin.test_func(), "test_func should return False for non-customers"
         )
@@ -54,7 +51,6 @@ class CustomerViewMixinTest(TestCase):
 
 class CustomerProfileViewTest(TestCase):
     def setUp(self):
-        # Create a user and profile
         self.user = User.objects.create(
             username="testuser",
             first_name="john",
@@ -84,7 +80,6 @@ class CustomerProfileViewTest(TestCase):
         self.assertIn("combined_form", response.context_data)
 
     def test_post_with_valid_data_triggers_form_valid(self):
-        # Prepare valid data for your UserProfileForm and UserInfoForm
         profile_picture = SimpleUploadedFile(
             "profile_pic.jpg", b"file_content", content_type="image/jpeg"
         )
@@ -124,7 +119,6 @@ class CustomerWorkshopDetailViewTest(TestCase):
             first_name="Test",
             last_name="Chef",
         )
-        # Create a user and profile
         self.customer = User.objects.create(
             username="testuser",
             first_name="henry",
@@ -163,7 +157,7 @@ class CustomerWorkshopDetailViewTest(TestCase):
         self.assertContains(response, "This is a test workshop.")
 
     def tearDown(self):
-        UserProfile.objects.all().delete()  # Or more targeted cleanup
+        UserProfile.objects.all().delete()
         User.objects.all().delete()
         Workshop.objects.all().delete()
 
@@ -177,7 +171,6 @@ class CustomerWorkshopBookTest(TestCase):
             first_name="Test",
             last_name="Chef",
         )
-        # Create a user and profile
         self.customer = User.objects.create(
             username="testuser",
             first_name="henry",
@@ -233,9 +226,7 @@ class CustomerWorkshopBookTest(TestCase):
         url = reverse("book-workshop", kwargs={"workshop_id": self.workshop.id})
         response = self.client.post(url)
         self.assertRedirects(response, reverse("customer_workshop"))
-        self.assertEqual(
-            WorkshopRegistration.objects.count(), 1
-        )  # No new registration should be created
+        self.assertEqual(WorkshopRegistration.objects.count(), 1)
         messages = list(get_messages(response.wsgi_request))
         self.assertIn(
             "You have already booked a workshop.",
@@ -248,9 +239,7 @@ class CustomerWorkshopBookTest(TestCase):
         url = reverse("book-workshop", kwargs={"workshop_id": self.workshop.id})
         response = self.client.post(url)
         self.assertRedirects(response, reverse("customer_workshop"))
-        self.assertEqual(
-            WorkshopRegistration.objects.count(), 0
-        )  # No registration should be created
+        self.assertEqual(WorkshopRegistration.objects.count(), 0)
 
 
 class CustomerWorkshopCancelViewTest(TestCase):
@@ -262,7 +251,6 @@ class CustomerWorkshopCancelViewTest(TestCase):
             first_name="Test",
             last_name="Chef",
         )
-        # Create a user and profile
         self.customer = User.objects.create(
             username="testuser",
             first_name="henry",
@@ -296,8 +284,6 @@ class CustomerWorkshopCancelViewTest(TestCase):
         self.client.force_login(self.customer)
 
     def test_cancel_workshop_registration_success(self):
-        # Assume the URL name for canceling a workshop registration is 'customer_workshop_cancel'
-        # and it takes a 'workshop_id' keyword argument
         url = reverse("cancel_workshop", kwargs={"workshop_id": self.workshop.id})
         response = self.client.post(url)
 
@@ -321,18 +307,13 @@ class CustomerWorkshopCancelViewTest(TestCase):
         response = self.client.post(url)
 
         self.assertRedirects(response, reverse("customer_workshop"))
-
-        # Check messages for the warning
         messages = list(get_messages(response.wsgi_request))
         warning_message = "You do not have a registration for this workshop to cancel."
         self.assertIn(warning_message, [message.message for message in messages])
-
-        # Ensure workshop capacity remains unchanged
         self.workshop.refresh_from_db()
         self.assertEqual(self.workshop.capacity, 5)
 
     def tearDown(self):
-        # Explicitly delete objects created during tests
         WorkshopRegistration.objects.all().delete()
         Workshop.objects.all().delete()
         UserProfile.objects.all().delete()
