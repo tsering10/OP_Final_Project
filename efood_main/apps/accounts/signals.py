@@ -1,5 +1,6 @@
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 from .models import User, UserProfile
 
 
@@ -11,6 +12,6 @@ def post_save_create_profile_receiver(sender, instance, created, **kwargs):
         try:
             profile = UserProfile.objects.get(user=instance)
             profile.save()
-        except:
+        except UserProfile.DoesNotExist:
             # Create the userprofile if not exist
             UserProfile.objects.create(user=instance)

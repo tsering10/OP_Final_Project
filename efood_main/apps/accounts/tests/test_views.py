@@ -1,13 +1,11 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.messages import get_messages
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode
 
 from efood_main.apps.accounts.models import User, UserProfile
-from efood_main.apps.chef.models import Chef
 
 
 class LoginViewTests(TestCase):

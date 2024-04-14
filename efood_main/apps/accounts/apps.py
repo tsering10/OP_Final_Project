@@ -6,4 +6,4 @@ class AccountsConfig(AppConfig):
     name = "efood_main.apps.accounts"
 
     def ready(self):
-        import efood_main.apps.accounts.signals
+        import efood_main.apps.accounts.signals  # noqa
