@@ -6,7 +6,7 @@ This application allows a chef to publish his own secret recipes and also enable
 
 * Python 3.x (you can install [python](https://www.python.org/downloads/))
 * Django  (you can install [Django](https://docs.djangoproject.com/en/5.0/intro/install/))
-* **pip** package management system -
+* **pip** package management system
 * Using a virtual environment is highly recommended - Setup project environment with [virtualenv](https://virtualenv.pypa.io) and [pip](https://pip.pypa.io)
 * Dependencies in **requirements.txt** (use `pip install -r requirements.txt` to install them)
 
@@ -90,4 +90,4 @@ Once flake8 is installed, you can run it from the command line to check the styl
 flake8 path/to/your/code/
 
 ```
-Replace path/to/your/code/ with the actual path to the Python files you want to check. If you want to check all Python files within your project, you can simply run flake8 without specifying a path.
+Replace path/to/your/code/ with the actual path to the Python files you want to check. If you want to check all Python files within your project, you can simply run flake8 without specifying a path. For more information check the flake8 documentation.
