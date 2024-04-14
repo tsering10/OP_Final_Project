@@ -39,7 +39,6 @@ class BaseTest(TestCase):
 
 
 class ChefProfileViewTest(BaseTest):
-
     def test_chef_profile_view_get(self):
         response = self.client.get(reverse("chef_profile"))
         self.assertEqual(response.status_code, 200)
