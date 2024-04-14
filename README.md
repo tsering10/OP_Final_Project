@@ -80,3 +80,14 @@ $ coverage report -m
 
 $ coverage html
 ```
+
+## 6. Verifying PEP 8 Compliance
+
+First, you need to ensure that flake8 is installed in your development environment. You can install it from here [flake8](https://flake8.pycqa.org/en/latest/)
+
+Once flake8 is installed, you can run it from the command line to check the style of your Python code. Navigate to your project's root directory and run:
+```
+flake8 path/to/your/code/
+
+```
+Replace path/to/your/code/ with the actual path to the Python files you want to check. If you want to check all Python files within your project, you can simply run flake8 without specifying a path.
