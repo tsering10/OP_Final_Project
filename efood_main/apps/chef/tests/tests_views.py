@@ -102,7 +102,6 @@ class RecipeItemsByCategoryViewTest(BaseTest):
             recipe_instructions="Instructions 1",
             preparation_time=timedelta(minutes=10),
             image=self.mock_image_file,
-            # image and external_link are optional, include if needed
         )
         self.recipe_item2 = RecipeItem.objects.create(
             chef=self.chef,
@@ -113,16 +112,12 @@ class RecipeItemsByCategoryViewTest(BaseTest):
             recipe_instructions="Instructions 2",
             preparation_time=timedelta(minutes=20),
             image=self.mock_image_file,
-            # image and external_link are optional, include if needed
         )
 
     def test_recipe_items_by_category_view(self):
-        # Simulate a GET request to the view for category1
         response = self.client.get(
             reverse("recipeitems_by_category", kwargs={"pk": self.category1.pk})
         )
-
-        # Check that the response is 200 OK
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.recipe_item1, response.context["recipeitems"])
         self.assertIn(self.recipe_item2, response.context["recipeitems"])
@@ -152,7 +147,6 @@ class AddCategoryViewTest(BaseTest):
         super().setUp()
 
     def test_add_category(self):
-        # The URL name 'add_category' needs to match your project's URL configuration
         url = reverse("add_category")
         category_name = "New Category"
         data = {
@@ -186,7 +180,6 @@ class EditCategoryViewTest(BaseTest):
 
         response = self.client.post(url, data)
 
-        # Verify redirect to success_url
         self.assertRedirects(
             response, reverse("recipe_builder"), status_code=302, target_status_code=200
         )
@@ -253,7 +246,6 @@ class AddRecipeViewTest(BaseTest):
 class EditRecipeViewTest(BaseTest):
     def setUp(self):
         super().setUp()
-
         self.category = Category.objects.create(
             chef=self.chef, category_name="Test Category", slug="test-category"
         )
@@ -285,7 +277,6 @@ class EditRecipeViewTest(BaseTest):
             reverse("recipeitems_by_category", args=[self.category.id]),
             status_code=302,
         )
-
         # Fetch the updated recipe item
         self.recipe_item.refresh_from_db()
         self.assertEqual(self.recipe_item.recipe_title, updated_data["recipe_title"])

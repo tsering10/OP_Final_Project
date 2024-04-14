@@ -14,9 +14,9 @@ class CategoryFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_category_form_invalid(self):
-        form_data = {}  # Submitting empty data
+        form_data = {}
         form = CategoryForm(data=form_data)
-        self.assertFalse(form.is_valid())  # Expecting form to be invalid
+        self.assertFalse(form.is_valid())
 
 
 class RecipeItemFormTest(TestCase):
@@ -61,7 +61,7 @@ class RecipeItemFormTest(TestCase):
             "recipe_title": "Lasagna",
             "recipe_ingredients": "Ingredients here",
             "recipe_instructions": "Instructions here",
-            "preparation_time": "2 hours",  # Intentionally incorrect format
+            "preparation_time": "2 hours",
             "external_link": "http://example.com",
             "image": self.image_file,
         }

@@ -204,7 +204,6 @@ class ResetPasswordValidateViewTest(TestCase):
 
 class RegisterUserViewTestCase(TestCase):
     def setUp(self):
-        # Setup request data for user registration
         self.user_data = {
             "first_name": "Test",
             "last_name": "User",
@@ -221,9 +220,8 @@ class RegisterUserViewTestCase(TestCase):
         self.assertTemplateUsed(response, "accounts/registerUser.html")
 
     def test_register_user_form_invalid(self):
-        # Modify one field to make the form invalid
         invalid_data = self.user_data.copy()
-        invalid_data["email"] = ""  # Assuming email is required
+        invalid_data["email"] = ""
         response = self.client.post(reverse("registerUser"), invalid_data)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(email="").exists())
@@ -231,7 +229,6 @@ class RegisterUserViewTestCase(TestCase):
 
 class RegisterChefViewTestCase(TestCase):
     def setUp(self):
-        # Setup request data for chef registration
         self.chef_data = {
             "first_name": "Test",
             "last_name": "User",
@@ -248,11 +245,10 @@ class RegisterChefViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_register_chef_form_invalid(self):
-        # Modify one field to make the form invalid
         invalid_data = self.chef_data.copy()
-        invalid_data["email"] = ""  # Assuming email is required
+        invalid_data["email"] = ""
         response = self.client.post(reverse("registerChef"), invalid_data)
-        self.assertEqual(response.status_code, 200)  # Page reloads with form errors
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(email="").exists())
 
 

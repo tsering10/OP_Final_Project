@@ -12,7 +12,6 @@ from efood_main.apps.workshop.forms import WorkshopItemForm
 class WorkshopItemFormTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # Create a custom user for the chef
         user, _ = User.objects.get_or_create(
             first_name="John",
             last_name="Doe",
@@ -23,7 +22,6 @@ class WorkshopItemFormTest(TestCase):
             role=1,
         )
 
-        # Create a user profile associated with the user
         user_profile, _ = UserProfile.objects.get_or_create(user=user)
 
         # Create the chef instance
@@ -35,7 +33,6 @@ class WorkshopItemFormTest(TestCase):
                 "license.jpg", b"license file content", content_type="image/jpeg"
             ),
             is_approved=True,
-            # Fill in other required fields as needed
         )
 
         # Create a category for the recipes
@@ -55,7 +52,6 @@ class WorkshopItemFormTest(TestCase):
             recipe_ingredients="Chocolate, Flour, Sugar, Eggs",
             recipe_instructions="Mix ingredients and bake.",
             preparation_time=timedelta(minutes=45),
-            # Optionally add image and external link
         )
 
         RecipeItem.objects.create(
@@ -78,8 +74,8 @@ class WorkshopItemFormTest(TestCase):
             "address": "123 Main St",
             "latitude": "40.7128",
             "longitude": "-74.0060",
-            "price_0": 10,  # The amount
-            "price_1": "EUR",  # The currency code
+            "price_0": 10,
+            "price_1": "EUR",
             "contact_phone": "1234567890",
             "recipe": RecipeItem.objects.first().id,
         }
@@ -87,5 +83,5 @@ class WorkshopItemFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def tearDown(self):
-        UserProfile.objects.all().delete()  # Or more targeted cleanup
+        UserProfile.objects.all().delete()
         User.objects.all().delete()

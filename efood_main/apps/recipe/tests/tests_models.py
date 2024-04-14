@@ -9,7 +9,6 @@ from efood_main.apps.recipe.models import Category, RecipeItem
 
 class BaseTest(TestCase):
     def setUp(self):
-        # Create a user
         self.user, _ = User.objects.get_or_create(
             first_name="John",
             last_name="Doe",
