@@ -33,7 +33,11 @@
                           <li>
                             <div class="img-holder">
                               <figure>
-                                <a href="#"><img src="assets/extra-images/listing-logo18.png" class="img-list wp-post-image" alt=""></a>
+                                {% if booking.recipe.image.url %}
+                                <a href="#"><img src="{{ booking.recipe.image.url}}" class="img-list wp-post-image" alt=""></a>
+                                {% else %}
+                                <img src="{% static 'images/default-workshop.png' %}" alt="">
+                                {% endif %}
                               </figure>
                               <span class="restaurant-status open"><em class="bookmarkRibbon"></em>Status: {% if booking.is_canceled %} Canceled {% else %} Active {% endif %}</span>
                             </div>

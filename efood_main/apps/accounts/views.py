@@ -1,17 +1,13 @@
-from django.conf import settings
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count
 from django.shortcuts import redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.utils.encoding import force_bytes, force_str
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from django.views.generic import CreateView, ListView, TemplateView
 
 from efood_main.apps.chef.forms import ChefForm
@@ -20,24 +16,7 @@ from efood_main.apps.workshop.models import Workshop
 
 from .forms import UserForm
 from .models import User, UserProfile
-
-
-def send_verification_email(request, user, mail_subject, email_template):
-    from_email = settings.DEFAULT_FROM_EMAIL
-    current_site = get_current_site(request)
-    message = render_to_string(
-        email_template,
-        {
-            "user": user,
-            "domain": current_site,
-            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-            "token": default_token_generator.make_token(user),
-        },
-    )
-    to_email = user.email
-    mail = EmailMessage(mail_subject, message, from_email, to=[to_email])
-    mail.content_subtype = "html"
-    mail.send()
+from .utils import send_verification_email
 
 
 class RegisterActivationView(TemplateView):
