@@ -12,6 +12,6 @@ def post_save_create_profile_receiver(sender, instance, created, **kwargs):
         try:
             profile = UserProfile.objects.get(user=instance)
             profile.save()
-        except UserProfile.DoesNotExist:
+        except:  # noqa: E722
             # Create the userprofile if not exist
             UserProfile.objects.create(user=instance)
