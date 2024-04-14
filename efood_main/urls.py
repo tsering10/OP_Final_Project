@@ -27,5 +27,4 @@ urlpatterns = [
     path("", views.HomePageView.as_view(), name="home"),
     path("search/", views.RecipeSearchListView.as_view(), name="recipe_search"),
     path("accounts/", include("efood_main.apps.accounts.urls")),
-    # path("", include("efood_main.apps.accounts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
