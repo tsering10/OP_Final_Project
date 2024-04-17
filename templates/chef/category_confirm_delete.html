@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Main Section Start -->
+<div class="main-section">
+    <div class="page-section nopadding cs-nomargin" style="margin-top: 0px;padding-top: 60px;padding-bottom: 60px;margin-bottom: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                    <div class="user-dashboard loader-holder" style="width: 450px; min-height: auto;">
+                        <div class="user-holder">
+                    <h4 class="text-center" style="margin-bottom: 0;"> Delete Category</h4>
+                    <div class="card-body">
+                        <!-- Delete post form-->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <!-- Form Row-->
+                            <fieldset class="form-group">
+                                <p>This will delete the category: <strong>{{ object }}</strong> ?</p>
+                            </fieldset>
+                            <div class="form-group mt-3 mb-1">
+                                <button class="btn btn-outline-danger mt-1 font-weight-bolder" type="submit" name="delete">Delete</button>
+                                <a class="btn btn-outline-primary mt-1 font-weight-bolder" onClick="javascript:history.go(-1);">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section End -->
+{% endblock %}

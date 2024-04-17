@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'includes/alerts.html' %}
+
+<!-- Main Section Start -->
+<div class="main-section">
+    {% include 'includes/cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- Load the sidebar here -->
+
+                    {% include 'includes/chef_sidebar.html' %}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h5 class="text-uppercase">Overview</h5>
+                            <p class="text-right">Logged in as: <b>{{ user.email }}</b></p>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Number of Recipe Categories
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">{{ total_category_count }}</h5>
+                                        </div>
+                                    </div>
+                                    
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        Total Recipes
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">{{total_recipe_items_count}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="user-orders-list responsive-table">
+                                        <br>
+                                        <br>
+                                        <ul class="table-generic" id="portfolio">
+                                            <li>
+                                                <div class="orders-title">Index</div>
+                                                <div class="orders-date">Title</div>
+                                                <div class="orders-type">Created at</div>
+                                            </li>
+                                            {% for recipe_item in recipe_items_page %}
+                                            <li>
+                                                <div class="orders-title">
+                                                    <h6 class="order-title">
+                                                        <a href="#" data-toggle="modal" data-target="#booking-detail-22603"> {{ forloop.counter }} </a>
+                                                    </h6>
+                                                </div>
+                                                <div class="orders-date">
+                                                    <span>{{recipe_item.recipe_title}}</span>
+                                                    
+                                                </div>
+                                                <div class="orders-status">
+                                                    <span class="booking-status" style="background-color: #047a06;">{{recipe_item.created_at}}</span>
+                                                </div>
+                                                
+                                            </li>
+                                            
+                                            {% endfor %}
+                                            
+                                            
+                                        </ul>
+                                     
+                                            <div class="pagination justify-content-center" >
+                                                <span class="step-links">
+                                                    {% if recipe_items_page.has_previous %}
+                                                        <a href="?page=1">&laquo; first</a>
+                                                        <a href="?page={{ recipe_items_page.previous_page_number }}">previous</a>
+                                                    {% endif %}
+
+                                                    <span class="current">
+                                                        Page {{ recipe_items_page.number }} of {{ recipe_items_page.paginator.num_pages }}.
+                                                    </span>
+
+                                                    {% if recipe_items_page.has_next %}
+                                                        <a href="?page={{ recipe_items_page.next_page_number }}">next</a>
+                                                        <a href="?page={{ recipe_items_page.paginator.num_pages }}">last &raquo;</a>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>												
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section End -->
+
+
+
+{% endblock %}

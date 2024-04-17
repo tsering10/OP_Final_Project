@@ -1,0 +1,39 @@
+{% load static %}
+<div class="wrapper">
+<!-- Header Start -->
+<header id="header">
+  <div class="main-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+          <div class="logo">
+            <figure>
+              <a href="{% url 'home' %}"  class="light-logo">
+              <img src="{% static 'logo/base_logo.png' %}" alt="chefRecipe" width="250"
+                height="100">
+              </a>
+            </figure>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+          <div class="login-option">
+            {% if user.is_authenticated %}
+            {% if user.is_chef%}
+            <a class="cs-color cs-popup-joinus-btn login-popup text-primary" href="{% url 'chefDashboard' %}"><i class="icon-build"></i> Account </a>
+            {% else %}
+            <a class="cs-color cs-popup-joinus-btn login-popup text-primary" href="{% url 'customerDashboard' %}"><i class="icon-build"></i> Account </a>
+            {% endif %}
+            <a class="cs-color cs-popup-joinus-btn login-popup text-danger" href="{% url 'logout' %}"><i class="icon-log-out"></i> Logout</a>
+            {% else %}
+            <a class="cs-color cs-popup-joinus-btn login-popup" href="{% url 'login' %}">Login </a> /
+            <span><a href="{% url 'registerUser' %}" class="cs-color cs-popup-joinus-btn login-popup ml-0">Register</a></span><a class="get-start-btn" href="{% url 'registerChef' %}">
+            Register
+            Chef</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Header End -->

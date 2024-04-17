@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+{% include 'includes/alerts.html' %}
+
+<!-- Main Section Start -->
+<div class="main-section">
+    {% comment %} {% include 'includes/cover.html' %} {% endcomment %}
+    <div class="page-section account-header buyer-logged-in">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <!-- Load the sidebar here -->
+                    {% include 'includes/chef_sidebar.html' %}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="user-dashboard loader-holder">
+                        <div class="user-holder">
+                            <h5 class="text-uppercase"> Build Your Recipe </h5>
+                            <hr>
+                            <button class="btn btn-secondary" onclick="history.back()"><i class="fa fa-angle-left" aria-hidden="true"></i> Back</button>
+                            <br><br>
+                            <h6>Category: <span class="text-uppercase text-success">{{category}}</span></h6>
+
+                            {% if recipeitems %}
+                            <table class="table table-hover table-borderless">
+                                <tbody>
+                                    {% for recipe in recipeitems %}
+                                    <tr>
+                                        <td class="text-left">{{ forloop.counter }}</td>
+                                        <td class="text-left"><img src="{{recipe.image.url}}" alt="Recipe Image" width="60" height="60"></td>
+                                        <td class="text-left">
+                                            <a href="{% url 'recipe_detail' recipe.slug  recipe.id%}" ><p class="mb-0 font-weight-bold">{{ recipe }}</p></a>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-success">{{recipe.updated_at}}</span>
+
+                                        </td>
+                                        <td>
+
+                                            <span class="badge badge-success">{{recipe.formatted_preparation_time}}</span>
+
+                                        </td>
+                                        {% comment %} <td> <a href="{% url 'recipe_detail' recipe.slug  recipe.id%}" class="btn btn-danger"><i class="fa fa-eye" aria-hidden="true"> Detail</i></a></td> {% endcomment %}
+                                        <td><a href="{% url 'edit_recipe' recipe.id %}" style="color:unset;"><i class="fa fa-pencil" aria-hidden="true"></i></a> &nbsp; <a href="{% url 'delete_recipe' recipe.id %}"><i class="fa fa-trash text-danger" aria-hidden="true"></i></a></td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                              <h5 class="text-center">No recipes found.</h5>
+                              <div class="text-center">
+                                  <a href="{% url 'add_recipe' %}" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> &nbsp; Add Recipe</a>
+                              </div>
+
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main Section End -->
+{% endblock %}

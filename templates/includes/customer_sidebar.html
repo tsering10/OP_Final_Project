@@ -1,0 +1,12 @@
+<div class="user-account-nav user-account-sidebar">
+    <div class="user-nav-list">
+        <ul>
+          <li class="{% if '/accounts/customerDashboard/' == request.path or '/accounts/customer/' == request.path %}active{% endif %}"><a href="{%url 'customerDashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a></li>
+          <li class="{% if 'c-profile' in request.path %}active {% endif %}"><a href="{% url 'cust_profile' %}"><i class="icon-build"></i>Profile Setting</a></li>
+          <li ><a href="{% url 'customer_workshop' %}"><i class="icon-menu5"></i>My Workshop</a></li>
+          <li><a class="logout-btn" href={% url 'logout' %}><i class="icon-log-out"></i>Signout</a></li>
+        </ul>
+    </div>
+</div>
+
+
